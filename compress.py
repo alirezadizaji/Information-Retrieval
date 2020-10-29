@@ -1,5 +1,6 @@
 from bitarray import bitarray
 from sys import getsizeof
+import nltk
 """
 bitarray has 64 Byte overhead for initialization. 
 while raw python list has 56 Byte.for each new entry
@@ -46,3 +47,7 @@ def encode_posting(posting, type):
     print("memory usage origin posting list: {} B, {} KB, {} MB".format(size, size/(2**10), size/(2**20)) )
     print("memory usage modified one: {} B, {} KB, {} MB".format(size2, size2/(2**10), size/(2**20)) )
     return res
+
+set1 = set("hello")
+set2 = set("okmnl")
+print(set1.union(set2))
