@@ -1,7 +1,7 @@
 from hazm import Normalizer, word_tokenize, Stemmer, WordTokenizer, stopwords_list
 import re
 import pandas as pd
-from Persion_preproccess import xml_to_csv
+from Presian_preproccess import xml_to_csv
 
 
 def conversion(filename):
