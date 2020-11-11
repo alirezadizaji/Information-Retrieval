@@ -5,7 +5,7 @@ import dill as dill
 import pandas as pd
 from collections import defaultdict
 
-# -------------------------------------------------------------Ted Talk------------------------------------------------#
+# ---------------------------------------------------------Eng Ted Talk------------------------------------------------#
 eng_title_posting_list = defaultdict(lambda: defaultdict(list))
 eng_document_posting_list = defaultdict(lambda: defaultdict(list))
 eng_title_bigram_list = defaultdict(list)
@@ -17,7 +17,7 @@ eng_ids = []
 #     print(t, "\n", d)
 
 
-def create_positional_index():
+def eng_create_index():
     global eng_title_posting_list, eng_document_posting_list
 
     csv_data = pd.read_csv("test.csv")
@@ -37,7 +37,7 @@ def create_positional_index():
     return
 
 
-def delete_positional_index(doc_id):
+def eng_delete_index(doc_id):
     global eng_title_posting_list, eng_document_posting_list
 
     for k in eng_title_posting_list.keys():
@@ -51,7 +51,7 @@ def delete_positional_index(doc_id):
     return
 
 
-def add_positional_index(path):
+def eng_add_index(path):
     global eng_title_posting_list, eng_document_posting_list
 
     data = pd.read_csv(path)
@@ -70,7 +70,7 @@ def add_positional_index(path):
     return
 
 
-def get_positional_index(word, field):
+def eng_get_index(word, field):
     if len(word) < 1:
         print("WORD LENGTH IS ZERO")
         return
@@ -91,7 +91,7 @@ def get_positional_index(word, field):
     return
 
 
-def load_positional_index():
+def eng_load_index():
     global eng_title_posting_list, eng_document_posting_list
     # title
     eng_title_positional = open("eng_title_positional.txt", "rb")
@@ -104,7 +104,7 @@ def load_positional_index():
     return
 
 
-def save_positional_index():
+def eng_save_index():
     # title
     eng_title_positional = open("eng_title_positional.txt", "wb")
     dill.dump(eng_title_posting_list, eng_title_positional)
@@ -116,7 +116,7 @@ def save_positional_index():
     return
 
 
-def create_positional_bigram():
+def eng_create_bigram():
     global eng_title_bigram_list, eng_document_bigram_list
     # title
     for k in eng_title_posting_list.keys():
@@ -133,7 +133,7 @@ def create_positional_bigram():
     return
 
 
-def delete_positional_bigram(word, field):
+def eng_delete_bigram(word, field):
     global eng_title_bigram_list, eng_document_bigram_list
 
     if field == 'TITLE':
@@ -153,7 +153,7 @@ def delete_positional_bigram(word, field):
     return
 
 
-def add_positional_bigram(word, field):
+def eng_add_bigram(word, field):
     global eng_title_bigram_list, eng_document_bigram_list
 
     if field == 'TITLE':
@@ -169,7 +169,7 @@ def add_positional_bigram(word, field):
     return
 
 
-def get_positional_bigram(bigram, field):
+def eng_get_bigram(bigram, field):
     if len(bigram) < 1:
         print("LENGTH ZERO")
         return
@@ -188,7 +188,7 @@ def get_positional_bigram(bigram, field):
     return
 
 
-def save_positional_bigram():
+def eng_save_bigram():
     # title
     eng_title_bigram = open("eng_title_bigram.txt", "wb")
     dill.dump(eng_title_bigram_list, eng_title_bigram)
@@ -200,7 +200,7 @@ def save_positional_bigram():
     return
 
 
-def load_positional_bigram():
+def eng_load_bigram():
     global eng_title_bigram_list, eng_document_bigram_list
     # title
     eng_title_bigram = open("eng_title_bigram.txt", "rb")
@@ -423,23 +423,21 @@ def wiki_load_bigram():
     return
 
 
-create_positional_index()
+eng_create_index()
 print(eng_title_posting_list)
 print(eng_document_posting_list)
-get_positional_index('salam', 'TITLE')
-delete_positional_index(0)
-get_positional_index('salam', 'TITLE')
-create_positional_bigram()
+eng_get_index('salam', 'TITLE')
+eng_delete_index(0)
+eng_get_index('salam', 'TITLE')
+eng_create_bigram()
 print(eng_title_bigram_list)
 print(eng_document_bigram_list)
-get_positional_bigram('sa', 'TITLE')
-delete_positional_bigram('salam', 'TITLE')
+eng_get_bigram('sa', 'TITLE')
+eng_delete_bigram('salam', 'TITLE')
 print(eng_title_bigram_list)
 print(eng_document_bigram_list)
-add_positional_bigram('al', 'TITLE')
+eng_add_bigram('al', 'TITLE')
 print(eng_title_bigram_list)
-# create_positional_bigram()
-# get_positional_bigram('sa', 'TEXT')
 # wiki_create_index('ted_talks.csv')
 # wiki_create_bigram()
 # wiki_get_bigram('he', 'TEXT')
@@ -450,5 +448,3 @@ print(eng_title_bigram_list)
 # wiki_get_index('help', 'TEXT')
 # wiki_save_index("title.txt", "doc.txt")
 # wiki_load_index("title.txt", "doc.txt")
-# create_positional_index()
-# get_positional_index('help', 'TEXT')
