@@ -1,4 +1,4 @@
-from hazm import Normalizer, word_tokenize, Stemmer, WordTokenizer, stopwords_list
+from hazm import Normalizer, word_tokenize, Stemmer, WordTokenizer, stopwords_list ,Lemmatizer
 import re
 import pandas as pd
 from Presian_preproccess import xml_to_csv
@@ -12,9 +12,11 @@ def conversion(filename):
 def listToString(lst):
     string = []
     for x in lst:
-        str1 = " "
-        string.append(str1.join(x))
+        x = x.split(" ")
+        st = ' '.join(map(str, x))
+        string.append(st)
     return string
+
 
 def extract_data_as_string():
     df = pd.read_csv("/Users/atena/phase_1_part1/Persion_preproccess/Persian.csv" )
@@ -32,7 +34,8 @@ def prepare_text(text):
     words = word_tokenize(normalized_text)
     words = [w for w in words if w != '.']
     words = [w for w in words if w not in stopwords_list()]
-    words = [stemmer.stem(w) for w in words]
+    words = [lemmatizer.lemmatize(w) for w in words]
+    words = ' '.join(words)
     return words
 
 def pre_proccess(lst):
@@ -48,10 +51,8 @@ def pre_proccess(lst):
 
 
 
-
-
-
 stemmer = Stemmer()
+lemmatizer = Lemmatizer()
 normalizer = Normalizer()
 tokenizer = WordTokenizer(separate_emoji=True, replace_links=True,
                               replace_IDs=True, replace_emails=True,
