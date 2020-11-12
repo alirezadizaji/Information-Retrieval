@@ -20,7 +20,7 @@ eng_ids = []
 def create_positional_index():
     global eng_title_posting_list, eng_document_posting_list
 
-    csv_data = pd.read_csv("test.csv")
+    csv_data = pd.read_csv("./English_preproccess/ted_talks.csv")
     titles = csv_data['title']
     descriptions = csv_data['description']
     id = 0
@@ -424,20 +424,24 @@ def wiki_load_bigram():
 
 
 create_positional_index()
-print(eng_title_posting_list)
-print(eng_document_posting_list)
-get_positional_index('salam', 'TITLE')
-delete_positional_index(0)
-get_positional_index('salam', 'TITLE')
 create_positional_bigram()
-print(eng_title_bigram_list)
-print(eng_document_bigram_list)
-get_positional_bigram('sa', 'TITLE')
-delete_positional_bigram('salam', 'TITLE')
-print(eng_title_bigram_list)
-print(eng_document_bigram_list)
-add_positional_bigram('al', 'TITLE')
-print(eng_title_bigram_list)
+save_positional_bigram()
+save_positional_index()
+## print(eng_title_posting_list)
+## print(eng_document_posting_list)
+## get_positional_index('salam', 'TITLE')
+## delete_positional_index(0)
+## get_positional_index('salam', 'TITLE')
+## create_positional_bigram()
+## print(eng_title_bigram_list)
+## print(eng_document_bigram_list)
+## get_positional_bigram('sa', 'TITLE')
+## delete_positional_bigram('salam', 'TITLE')
+## print(eng_title_bigram_list)
+## print(eng_document_bigram_list)
+## add_positional_bigram('al', 'TITLE')
+## print(eng_title_bigram_list)
+
 # create_positional_bigram()
 # get_positional_bigram('sa', 'TEXT')
 # wiki_create_index('ted_talks.csv')
