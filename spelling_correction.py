@@ -1,46 +1,57 @@
+import os
+from collections import defaultdict
+
+import dill
 import numpy as np
 import nltk
 
-def jacc_type1(w1, w2, posting):
-    w1_repu = {}
-    w2_repu = {}
-    for k, v in posting.items():
-        for w in v:
-            w1_repu[k] += 1 if w == w1 else 0
-            w2_repu[k] += 1 if w == w2 else 0
-    A = sum(w1_repu.values())
-    B = sum(w2_repu.values())
+def load_bigram(path):
+    if not os.path.isfile(path):
+        raise Exception('INVALID PATH')
+    with open(path, "rb") as f:
+        index = dill.load(f)
+        f.close()
+        return index
+
+
+def jaccard_dist_type1(q, w, idx):
+    A = len(bigram(q))
+    B = len(bigram(w))
     A_B = 0
-    for k in posting.keys():
-        A_B += min(w1_repu[k], w2_repu[k])
+    for k, v in idx.items():
+        for vocab in v:
+            A_B += 1 if w == vocab else 0
     return (A_B) / (A + B - A_B)
 
-def jacc_type2(w1, w2):
+def jaccard_dist_type2(w1, w2):
     return nltk.jaccard_distance(w1, w2)
 
-def spell_correction(query, bg_posting, type1=True):
-    jacc_dist = {}
+def bigram(w):
+    length = len(w)
+    return [w[i:i+2] for i in range(length-1)]
+
+def spell_correction(query, bg_idx, type1=True):
+    jacc_dist = defaultdict(int)
     ans = [''] * len(query)
 
     for i, w in enumerate(query):
-        bgs = nltk.bigrams(w)
-        ext_posting = {k: bg_posting[k] for k in bgs if k in bg_posting.keys()}
+        bgs = bigram(w)
+        ext_idx = {k: bg_idx[k] for k in bgs if k in bg_idx.keys()}
         words = []
-        for k, v in ext_posting.items():
+        for v in ext_idx.values():
             words.extend(v)
 
         bag_of_words = set(words)
         if w in bag_of_words:
             ans[i] = w
-            break
+            continue
 
         maximum = 0
-        while len(bag_of_words) >= 0:
+        while len(bag_of_words) > 0:
             k = bag_of_words.pop()
-            jacc_dist[w, k] = jacc_type1(w,k,ext_posting) if type1 else jacc_type2(w,k)
+            jacc_dist[w, k] = jaccard_dist_type1(w, k, ext_idx) if type1 else jaccard_dist_type2(w, k)
             maximum = max(jacc_dist[w, k], maximum)
             ans[i] = k if jacc_dist[w, k] == maximum else ans[i]
-
     return ans
 
 def edit_distance(w1, w2):
@@ -60,3 +71,11 @@ def edit_distance(w1, w2):
             dist_mtx[i + 1, j + 1] = min(val1, val2, val3)
     return dist_mtx[l1, l2]
 
+
+#TODO: preprocess query, then pass to spell_correction func
+
+bg_idx = load_bigram("eng_doc_bigram.txt")
+query = ["whhat", "hhello", "doooog"]
+ans = spell_correction(query, bg_idx, type1=True)
+print(ans)
+print(edit_distance("cat", "act"))

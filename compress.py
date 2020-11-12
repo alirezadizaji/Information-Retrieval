@@ -1,12 +1,12 @@
 import time
 
+import dill
 from bitarray import bitarray
 from sys import getsizeof
-import dill
 import nltk
 import os
 from collections import defaultdict
-
+import pickle
 
 """
 bitarray has 64 Byte overhead for initialization. 
@@ -27,7 +27,7 @@ def load_index(path):
 def save_index(idx_info):
     path = idx_info['path'][:-4]
 
-    with open("{}_compressed.txt".format(path), "wb") as f:
+    with open("{}_compressed.pkl".format(path), "wb") as f:
         dill.dump(idx_info['index'], f)
         f.close()
 
@@ -101,6 +101,9 @@ def gamma_code_encoder(num):
     gamma = bitarray(binary[1:])
     return length + gamma
 
+def gamma_code_decoder(bitarr):
+    pass
+
 def compress(index, type):
     new_index = defaultdict(list)
     for term in index.keys():
@@ -141,7 +144,7 @@ def decompress(index, type):
 
 
 """      compressing       """
-path = "eng_doc_positional.txt"
+path = "eng_doc_positional.pkl"
 type = "vb"
 info = load_index(path)
 idx = info['index']
@@ -150,6 +153,6 @@ info['index'] = compress(idx, type)
 save_index(info)
 
 """       decompressing     """
-path = "{}_compressed.txt".format(path[:-4])
-compressed = load_index("eng_doc_positional_compressed.txt")['index']
+path = "{}_compressed.pkl".format(path[:-4])
+compressed = load_index(path)['index']
 new_index = decompress(compressed, type)
