@@ -11,6 +11,7 @@ eng_document_posting_list = defaultdict(lambda: defaultdict(list))
 eng_title_bigram_list = defaultdict(list)
 eng_document_bigram_list = defaultdict(list)
 eng_ids = []
+eng_total_documents = 0
 
 
 # for t, d in zip(titles, descriptions):
@@ -57,7 +58,7 @@ def eng_add_index(path):
     data = pd.read_csv(path)
     titles = data['title']
     descriptions = data['description']
-    id = eng_ids[-1]
+    id = eng_ids[-1] + 1
     eng_ids.append(id)
     for title, description in zip(titles, descriptions):
         # print(id, "    ", title, "  ", document)
@@ -220,15 +221,14 @@ title_posting_list = defaultdict(lambda: defaultdict(list))
 document_posting_list = defaultdict(lambda: defaultdict(list))
 title_bigram_list = defaultdict(list)
 document_bigram_list = defaultdict(list)
-
+wiki_total_documents = 0
 
 def wiki_create_index(path):
     global title_posting_list, document_posting_list
     data = pd.read_csv(path)
     titles = data['title']
-    # todo change into text and id
-    documents = data['description']
-    id = data['comments']
+    documents = data['text']
+    id = data['id']
     for doc_id, title, document in zip(id, titles, documents):
         # print(doc_id, "    ", title, "  ", document)
         title_words = title.split(" ")
@@ -259,9 +259,8 @@ def wiki_add_index(path):
     global title_posting_list, document_posting_list
     data = pd.read_csv(path)
     titles = data['title']
-    # todo change into text and id
-    documents = data['description']
-    id = data['comments']
+    documents = data['text']
+    id = data['id']
     for v in document_posting_list.values():
         if v.keys().__contains__(id):
             print("Document Already exists")
