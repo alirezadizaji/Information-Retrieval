@@ -1,12 +1,15 @@
+import json
 import time
+from itertools import chain
 
 import dill
 from bitarray import bitarray
-from sys import getsizeof
+from sys import getsizeof, stderr
 import nltk
 import os
-from collections import defaultdict
+from collections import defaultdict, deque
 import pickle
+import pprint
 
 """
 bitarray has 64 Byte overhead for initialization. 
@@ -104,6 +107,22 @@ def gamma_code_encoder(num):
 def gamma_code_decoder(bitarr):
     pass
 
+def memory_usage(idx, new_idx):
+    size = getsizeof(idx)
+    new_size = getsizeof(new_idx)
+    print("(DICT) memory usage origin index: {} B, {} KB, {} MB".format(size, size / (2**10), size / (2**20)))
+    print("(DICT) memory usage new index: {} B, {} KB, {} MB".format(new_size, new_size / (2**10), new_size / (2**20)))
+
+    print("-------------------")
+
+    size, new_size = 0, 0
+    for k in idx.keys():
+        size += getsizeof(idx[k])
+        new_size += getsizeof(new_idx[k])
+    print("(SUM ONE BY ONE) memory usage origin index: {} B, {} KB, {} MB".format(size, size / (2**10), size / (2**20)))
+    print("(SUM ONE BY ONE) memory usage new index: {} B, {} KB, {} MB".format(new_size, new_size / (2**10), new_size / (2**20)))
+
+
 def compress(index, type):
     new_index = defaultdict(list)
     for term in index.keys():
@@ -119,10 +138,7 @@ def compress(index, type):
                     print("INVALID TYPE")
                     return
             new_index[term].append((docid, res))
-    size = getsizeof(index)
-    new_size = getsizeof(new_index)
-    print("memory usage origin posting list: {} B, {} KB, {} MB".format(size, size/(2**10), size/(2**20)) )
-    print("memory usage modified one: {} B, {} KB, {} MB".format(new_size, new_size/(2**10), new_size/(2**20)) )
+    memory_usage(index, new_index)
     return new_index
 
 def decompress(index, type):
@@ -141,6 +157,36 @@ def decompress(index, type):
     decode_distance_index(new_index)
     return new_index
 
+# reference: https://stackoverflow.com/questions/6579757/memory-usage-of-dictionary-in-python/37687855
+def total_size(o, handlers={}, verbose=False):
+    dict_handler = lambda d: chain.from_iterable(d.items())
+    all_handlers = {tuple: iter,
+                    list: iter,
+                    deque: iter,
+                    dict: dict_handler,
+                    set: iter,
+                    frozenset: iter,
+                   }
+    all_handlers.update(handlers)
+    seen = set()
+    default_size = getsizeof(0)
+
+    def sizeof(o):
+        if id(o) in seen:
+            return 0
+        seen.add(id(o))
+        s = getsizeof(o, default_size)
+
+        if verbose:
+            print(s, type(o), repr(o), file=stderr)
+
+        for typ, handler in all_handlers.items():
+            if isinstance(o, typ):
+                s += sum(map(sizeof, handler(o)))
+                break
+        return s
+
+    return sizeof(o)
 
 
 """      compressing       """

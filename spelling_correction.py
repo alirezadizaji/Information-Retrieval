@@ -13,18 +13,25 @@ def load_bigram(path):
         f.close()
         return index
 
-
+#reference: https://www.geeksforgeeks.org/spelling-correction-using-k-gram-overlap/
 def jaccard_dist_type1(q, w, idx):
     A = len(bigram(q))
     B = len(bigram(w))
-    A_B = 0
+    AB = 0
     for k, v in idx.items():
         for vocab in v:
-            A_B += 1 if w == vocab else 0
-    return (A_B) / (A + B - A_B)
+            AB += 1 if w == vocab else 0
+    A_B = A + B - AB
+    return (AB) / (A_B)
 
-def jaccard_dist_type2(w1, w2):
-    return nltk.jaccard_distance(w1, w2)
+#reference: https://python.gotrained.com/nltk-edit-distance-jaccard-distance/#Jaccard_Distance
+def jaccard_dist_type2(q, w):
+    A = set(q)
+    B = set(w)
+    A_B = len(A.union(B))
+    AB = len(A.intersection(B))
+    return AB / A_B
+
 
 def bigram(w):
     length = len(w)
@@ -73,9 +80,8 @@ def edit_distance(w1, w2):
 
 
 #TODO: preprocess query, then pass to spell_correction func
-
 bg_idx = load_bigram("eng_doc_bigram.txt")
 query = ["whhat", "hhello", "doooog"]
-ans = spell_correction(query, bg_idx, type1=True)
+ans = spell_correction(query, bg_idx, type1=False)
 print(ans)
 print(edit_distance("cat", "act"))
