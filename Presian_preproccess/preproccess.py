@@ -19,7 +19,7 @@ def listToString(lst):
 
 
 def extract_data_as_string():
-    df = pd.read_csv("/Users/atena/phase_1_part1/Persion_preproccess/Persian.csv" )
+    df = pd.read_csv("Persian.csv" )
     titles=listToString(df["page_title"])
     text = listToString(df["text"])
     return  titles , text ,df["page_id"]
@@ -66,7 +66,7 @@ tokenizer.emoji_repl = '.'
 tokenizer.link_repl = '.'
 punctuations = r"""!"#$%&'()*+,-./:;<=>?@[\]^_`؟،{|}~"""
 
-conversion("/Users/atena/phase_1_part1/Persion_preproccess/Persian.xml")
+conversion("Persian.xml")
 title , text, ids = extract_data_as_string()
 final_text = pre_proccess(text)
 final_title = pre_proccess(title)
