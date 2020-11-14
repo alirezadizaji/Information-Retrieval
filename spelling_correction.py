@@ -78,10 +78,3 @@ def edit_distance(w1, w2):
             dist_mtx[i + 1, j + 1] = min(val1, val2, val3)
     return dist_mtx[l1, l2]
 
-
-#TODO: preprocess query, then pass to spell_correction func
-bg_idx = load_bigram("eng_doc_bigram.txt")
-query = ["whhat", "hhello", "doooog"]
-ans = spell_correction(query, bg_idx, type1=False)
-print(ans)
-print(edit_distance("cat", "act"))
