@@ -187,18 +187,3 @@ def total_size(o, handlers={}, verbose=False):
         return s
 
     return sizeof(o)
-
-
-"""      compressing       """
-path = "eng_doc_positional.pkl"
-type = "vb"
-info = load_index(path)
-idx = info['index']
-create_distance_index(idx)
-info['index'] = compress(idx, type)
-save_index(info)
-
-"""       decompressing     """
-path = "{}_compressed.pkl".format(path[:-4])
-compressed = load_index(path)['index']
-new_index = decompress(compressed, type)
