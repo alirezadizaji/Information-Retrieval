@@ -86,5 +86,9 @@ if __name__ == '__main__':
                 print("Enter Field: TITLE or TEXT")
                 field = input()
                 wiki_get_bigram(bigram, field, wiki_title_bigram_list, wiki_document_bigram_list)
+            elif cmd == '6':
+                print("Enter Query")
+                query = input()
+                search(query, wiki_title_posting_list, wiki_document_posting_list, wiki_total_documents)
             elif cmd == '7':
                 break
