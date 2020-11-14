@@ -1,14 +1,17 @@
 from collections import defaultdict
 import math
 import numpy as np
+
+
 # import English_preproccess.preproccess as ep
 # import Presian_preproccess.preproccess as pp
-import Indexing
 
-DOC_TYPE = 'Eng'
-ret_text_posting_list = defaultdict(lambda: defaultdict(list))
-ret_title_posting_list = defaultdict(lambda: defaultdict(list))
-tot_documents = 0
+# DOC_TYPE = 'Eng'
+
+
+# ret_text_posting_list = defaultdict(lambda: defaultdict(list))
+# ret_title_posting_list = defaultdict(lambda: defaultdict(list))
+# tot_documents = 0
 
 
 def calc_tf(tf):
@@ -18,12 +21,12 @@ def calc_tf(tf):
         return 1 + math.log(tf, 10)
 
 
-def calc_idf(df):
+def calc_idf(df, tot_documents):
     return math.log((tot_documents / (df + 1)), 10)
 
 
-def create_title_tf_table():
-    global ret_title_posting_list, title_terms, title_term_to_number
+def create_title_tf_table(ret_title_posting_list, title_term_to_number, tot_documents, title_terms):
+    # global ret_title_posting_list, title_terms, title_term_to_number
     # title_terms = list(ret_title_posting_list.keys())
     # title_term_to_number = {t: i for i, t in enumerate(title_terms)}
     tf = np.zeros((tot_documents, len(title_terms)))
@@ -33,8 +36,8 @@ def create_title_tf_table():
     return tf
 
 
-def create_text_tf_table():
-    global ret_text_posting_list, text_terms, text_term_to_number
+def create_text_tf_table(ret_text_posting_list, text_term_to_number, tot_documents, text_terms):
+    # global ret_text_posting_list, text_terms, text_term_to_number
     # text_terms = list(ret_text_posting_list.keys())
     # text_term_to_number = {t: i for i, t in enumerate(text_terms)}
     tf = np.zeros((tot_documents, len(text_terms)))
@@ -44,22 +47,22 @@ def create_text_tf_table():
     return tf
 
 
-def create_title_idf():
+def create_title_idf(title_terms, title_term_to_number, ret_title_posting_list, tot_documents):
     idf = [0] * len(title_terms)
     for t in ret_title_posting_list.keys():
-        idf[title_term_to_number[t]] = calc_idf(len(ret_title_posting_list[t]))
+        idf[title_term_to_number[t]] = calc_idf(len(ret_title_posting_list[t]), tot_documents)
     return idf
 
 
-def create_text_idf():
+def create_text_idf(text_terms, text_term_to_number, ret_text_posting_list, tot_documents):
     idf = [0] * len(text_terms)
     for t in ret_text_posting_list.keys():
-        idf[text_term_to_number[t]] = calc_idf(len(ret_text_posting_list[t]))
+        idf[text_term_to_number[t]] = calc_idf(len(ret_text_posting_list[t]), tot_documents)
     return idf
 
 
-def calc_title_weights():
-    global title_tf, title_idf
+def calc_title_weights(title_tf, title_idf):
+    # global title_tf, title_idf
 
     for d in range(title_tf.shape[0]):
         w = 0
@@ -73,8 +76,8 @@ def calc_title_weights():
     return title_tf
 
 
-def calc_text_weights():
-    global text_tf, text_idf
+def calc_text_weights(text_tf, text_idf):
+    # global text_tf, text_idf
 
     for d in range(text_tf.shape[0]):
         w = 0
@@ -88,8 +91,9 @@ def calc_text_weights():
     return text_tf
 
 
-def ltc_lnc(header, query):
-    global title_weights, text_weights
+def ltc_lnc(header, query, title_weights, text_weights, title_term_to_number, text_term_to_number,
+            ret_title_posting_list, ret_text_posting_list, tot_documents):
+    # global title_weights, text_weights
     # if DOC_TYPE == 'Eng':
     #     query = ep.clean_text(query)
     # else:
@@ -98,6 +102,7 @@ def ltc_lnc(header, query):
     if header == 'title':
         query_terms_ = [q for q in query_terms if q in ret_title_posting_list.keys()]
         query_ = {i: calc_tf(query_terms_.count(i)) for i in np.unique(query_terms_)}
+        print(query_)
         w = 0
         for q in query_.keys():
             w += query_[q] ** 2
@@ -124,32 +129,18 @@ def ltc_lnc(header, query):
     return scores
 
 
-def retrieve_posting_lists():
-    global ret_text_posting_list, ret_title_posting_list, tot_documents, indexing
-    if DOC_TYPE == 'Eng':
-        indexing.eng_create_index()
-        ret_text_posting_list = indexing.eng_document_posting_list
-        ret_title_posting_list = indexing.eng_title_posting_list
-        tot_documents = indexing.eng_total_documents
-    else:
-        indexing.wiki_create_index()
-        ret_text_posting_list = indexing.document_posting_list
-        ret_title_posting_list = indexing.title_posting_list
-        tot_documents = indexing.wiki_total_documents
-
-
-indexing = Indexing
-retrieve_posting_lists()
-title_terms = list(ret_title_posting_list.keys())
-title_term_to_number = {t: i for i, t in enumerate(title_terms)}
-text_terms = list(ret_text_posting_list.keys())
-text_term_to_number = {t: i for i, t in enumerate(text_terms)}
-title_tf = create_title_tf_table()
-text_tf = create_text_tf_table()
-title_idf = create_title_idf()
-text_idf = create_text_idf()
-title_weights = calc_title_weights()
-text_weights = calc_text_weights()
+# def retrieve_posting_lists():
+#     global ret_text_posting_list, ret_title_posting_list, tot_documents, indexing
+#     if DOC_TYPE == 'Eng':
+#         indexing.eng_create_index()
+#         ret_text_posting_list = indexing.eng_document_posting_list
+#         ret_title_posting_list = indexing.eng_title_posting_list
+#         tot_documents = indexing.eng_total_documents
+#     else:
+#         indexing.wiki_create_index()
+#         ret_text_posting_list = indexing.document_posting_list
+#         ret_title_posting_list = indexing.title_posting_list
+#         tot_documents = indexing.wiki_total_documents
 
 
 def add_scores(title_scores, text_scores):
@@ -159,12 +150,20 @@ def add_scores(title_scores, text_scores):
     return s
 
 
-def search(query):
-    title_scores = ltc_lnc('title', query)
-    text_scores = ltc_lnc('text', query)
+def search(query, ret_title_posting_list, ret_text_posting_list, tot_documents):
+    title_terms = list(ret_title_posting_list.keys())
+    title_term_to_number = {t: i for i, t in enumerate(title_terms)}
+    text_terms = list(ret_text_posting_list.keys())
+    text_term_to_number = {t: i for i, t in enumerate(text_terms)}
+    title_tf = create_title_tf_table(ret_title_posting_list, title_term_to_number, tot_documents, title_terms)
+    text_tf = create_text_tf_table(ret_text_posting_list, text_term_to_number, tot_documents, text_terms)
+    title_idf = create_title_idf(title_terms, title_term_to_number, ret_title_posting_list, tot_documents)
+    text_idf = create_text_idf(text_terms, text_term_to_number, ret_text_posting_list, tot_documents)
+    title_weights = calc_title_weights(title_tf, title_idf)
+    text_weights = calc_text_weights(text_tf, text_idf)
+    title_scores = ltc_lnc('title', query, title_weights, text_weights, title_term_to_number, text_term_to_number,
+                           ret_title_posting_list, ret_text_posting_list, tot_documents)
+    text_scores = ltc_lnc('text', query, title_weights, text_weights, title_term_to_number, text_term_to_number,
+                          ret_title_posting_list, ret_text_posting_list, tot_documents)
     best_doc_ids = add_scores(title_scores, text_scores)
     print(best_doc_ids)
-
-
-print("Enter your query:")
-search(input())
