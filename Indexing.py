@@ -29,15 +29,16 @@ def eng_create_index(path):
     descriptions = csv_data['description']
     id = 0
     for title, description in zip(titles, descriptions):
-        title_words = title.split(" ")
-        description_words = description.split(" ")
-        for i, t in enumerate(title_words):
-            eng_title_posting_list[t][id].append(i + 1)
-        for i, d in enumerate(description_words):
-            eng_document_posting_list[d][id].append(i + 1)
-        eng_ids.append(id)
-        eng_total_documents += 1
-        id += 1
+        if not str(title) == 'nan' and not str(description) == 'nan':
+            title_words = title.split(" ")
+            description_words = description.split(" ")
+            for i, t in enumerate(title_words):
+                eng_title_posting_list[t][id].append(i + 1)
+            for i, d in enumerate(description_words):
+                eng_document_posting_list[d][id].append(i + 1)
+            eng_ids.append(id)
+            eng_total_documents += 1
+            id += 1
     # print(eng_document_posting_list)
     return eng_title_posting_list, eng_document_posting_list, eng_total_documents
 
@@ -246,15 +247,15 @@ def wiki_create_index(path):
     ids = 0
     for doc_id, title, document in zip(id, titles, documents):
         # print(doc_id, "    ", title, "  ", document)
-        title_words = title.split(" ")
-        document_words = document.split(" ")
-        for i, t in enumerate(title_words):
-            title_posting_list[t][ids].append(i + 1)
-        for i, d in enumerate(document_words):
-            document_posting_list[d][ids].append(i + 1)
-        wiki_total_documents += 1
-        # wiki_ids.append(ids)
-        ids += 1
+            title_words = title.split(" ")
+            document_words = document.split(" ")
+            for i, t in enumerate(title_words):
+                title_posting_list[t][ids].append(i + 1)
+            for i, d in enumerate(document_words):
+                document_posting_list[d][ids].append(i + 1)
+            wiki_total_documents += 1
+            # wiki_ids.append(ids)
+            ids += 1
     # print(document_posting_list['help'])
     return title_posting_list, document_posting_list, wiki_total_documents
 

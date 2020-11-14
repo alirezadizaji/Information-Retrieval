@@ -16,7 +16,7 @@ import numpy as np
 
 def calc_tf(tf):
     if tf == 0:
-        return 0
+        return 1
     else:
         return 1 + math.log(tf, 10)
 
@@ -33,6 +33,7 @@ def create_title_tf_table(ret_title_posting_list, title_term_to_number, tot_docu
     for t in ret_title_posting_list.keys():
         for d in ret_title_posting_list[t].keys():
             tf[d][title_term_to_number[t]] = calc_tf(len(ret_title_posting_list[t][d]))
+
     return tf
 
 
@@ -63,14 +64,17 @@ def create_text_idf(text_terms, text_term_to_number, ret_text_posting_list, tot_
 
 def calc_title_weights(title_tf, title_idf):
     # global title_tf, title_idf
-
     for d in range(title_tf.shape[0]):
         w = 0
         for t in range(title_tf.shape[1]):
             title_tf[d][t] = title_tf[d][t] * title_idf[t]
             w += title_tf[d][t] ** 2
+
+
         w = math.sqrt(w)
         for t in range(title_tf.shape[1]):
+            if w == 0:
+                w=1
             title_tf[d][t] = title_tf[d][t] / w
 
     return title_tf
@@ -78,7 +82,6 @@ def calc_title_weights(title_tf, title_idf):
 
 def calc_text_weights(text_tf, text_idf):
     # global text_tf, text_idf
-
     for d in range(text_tf.shape[0]):
         w = 0
         for t in range(text_tf.shape[1]):
@@ -86,6 +89,8 @@ def calc_text_weights(text_tf, text_idf):
             w += text_tf[d][t] ** 2
         w = math.sqrt(w)
         for t in range(text_tf.shape[1]):
+            if w == 0:
+                w=1
             text_tf[d][t] = text_tf[d][t] / w
 
     return text_tf
@@ -99,6 +104,7 @@ def ltc_lnc(header, query, title_weights, text_weights, title_term_to_number, te
     # else:
     #     query = pp.prepare_text(query)
     query_terms = query.split()
+    print(query_terms)
     if header == 'title':
         query_terms_ = [q for q in query_terms if q in ret_title_posting_list.keys()]
         query_ = {i: calc_tf(query_terms_.count(i)) for i in np.unique(query_terms_)}
@@ -154,6 +160,7 @@ def search(query, ret_title_posting_list, ret_text_posting_list, tot_documents):
     title_terms = list(ret_title_posting_list.keys())
     title_term_to_number = {t: i for i, t in enumerate(title_terms)}
     text_terms = list(ret_text_posting_list.keys())
+
     text_term_to_number = {t: i for i, t in enumerate(text_terms)}
     title_tf = create_title_tf_table(ret_title_posting_list, title_term_to_number, tot_documents, title_terms)
     text_tf = create_text_tf_table(ret_text_posting_list, text_term_to_number, tot_documents, text_terms)
@@ -163,6 +170,7 @@ def search(query, ret_title_posting_list, ret_text_posting_list, tot_documents):
     text_weights = calc_text_weights(text_tf, text_idf)
     title_scores = ltc_lnc('title', query, title_weights, text_weights, title_term_to_number, text_term_to_number,
                            ret_title_posting_list, ret_text_posting_list, tot_documents)
+
     text_scores = ltc_lnc('text', query, title_weights, text_weights, title_term_to_number, text_term_to_number,
                           ret_title_posting_list, ret_text_posting_list, tot_documents)
     best_doc_ids = add_scores(title_scores, text_scores)
