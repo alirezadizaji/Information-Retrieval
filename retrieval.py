@@ -74,9 +74,8 @@ def calc_title_weights(title_tf, title_idf):
         w = math.sqrt(w)
         for t in range(title_tf.shape[1]):
             if w == 0:
-                w=1
+                w = 1
             title_tf[d][t] = title_tf[d][t] / w
-
     return title_tf
 
 

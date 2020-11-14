@@ -84,8 +84,7 @@ if __name__ == '__main__':
                 bg_idx = load_bigram(path)
                 print("Enter query: ")
                 query = input()
-                # TODO: preprocess query, then pass to spell_correction func
-                query = ["whhat", "hhello", "doooog"]
+                query = preproccess.prepare_text(query)
                 ans = spell_correction(query, bg_idx, type1=False)
                 print(ans)
             elif cmd == '10':
@@ -99,6 +98,7 @@ if __name__ == '__main__':
             elif cmd == '11':
                 print("Enter Query")
                 query = input()
+                query=preproccess.prepare_text(query)
                 search(query, eng_title_posting_list, eng_document_posting_list, eng_total_documents)
             elif cmd =='12':
                 print("Enter Query like : word1 /range word2")
@@ -185,8 +185,8 @@ if __name__ == '__main__':
                 bg_idx = load_bigram(path)
                 print("Enter query: ")
                 query = input()
-                # TODO: preprocess query, then pass to spell_correction func
-                query = ["whhat", "hhello", "doooog"]
+                query= persian_preproccess.prepare_text(query)
+                query = list(query.split())
                 ans = spell_correction(query, bg_idx, type1=False)
                 print(ans)
             elif cmd == '10':
@@ -199,6 +199,7 @@ if __name__ == '__main__':
             elif cmd == '11':
                 print("Enter Query")
                 query = input()
+                query=persian_preproccess.prepare_text(query)
                 search(query, wiki_title_posting_list, wiki_document_posting_list, wiki_total_documents)
             elif cmd == '12':
                 print("Enter Query like : word1 /range word2")
