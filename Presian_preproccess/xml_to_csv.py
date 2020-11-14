@@ -136,9 +136,9 @@ def xml_to_csv_method(filename, csv_separator):
     output_csv.write("\n")
 
     # Parsing xml and writting proccesed data to output csv
-    print("Processing...")
+    print("Conversion...")
     parser.ParseFile(input_file)
-    print("Done processing")
+    print("Done Convertion to csv")
 
     input_file.close()
     output_csv.close()
