@@ -29,11 +29,14 @@ def create_title_tf_table(ret_title_posting_list, title_term_to_number, tot_docu
     # global ret_title_posting_list, title_terms, title_term_to_number
     # title_terms = list(ret_title_posting_list.keys())
     # title_term_to_number = {t: i for i, t in enumerate(title_terms)}
+    # print(ret_title_posting_list)
+    # print(title_term_to_number)
+    # print(tot_documents)
+    # print(title_terms)
     tf = np.zeros((tot_documents, len(title_terms)))
     for t in ret_title_posting_list.keys():
         for d in ret_title_posting_list[t].keys():
             tf[d][title_term_to_number[t]] = calc_tf(len(ret_title_posting_list[t][d]))
-
     return tf
 
 

@@ -36,7 +36,7 @@ def CalculateOccurencesInRange(keyPositionsList, PositionToOccurencesMap, w_rang
 def CalculateOccurences(keyword1 , keyword2,window_range):
 
     founded_result=[]
-    csv_data = pd.read_csv("/Users/atena/PycharmProjects/Information-Retrieval-Project/English_preproccess/prepared_english.csv")
+    csv_data = pd.read_csv("/Users/atena/PycharmProjects/Information-Retrieval-Project/prepared_english.csv")
     titles = csv_data['title']
     titles = listToString(titles)
 
@@ -117,7 +117,7 @@ def CalculateOccurences(keyword1 , keyword2,window_range):
                 founded_result.append(descriptions.index(w))
                # print(descriptions.index(w),w,'\n' , key1Occurences,key2Occurences,totalOccurences_des ,'\n')
 
-    return "proximity founded",founded_result
+    return founded_result
 
 
 

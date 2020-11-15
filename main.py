@@ -42,6 +42,7 @@ if __name__ == '__main__':
             elif cmd == '2':
                 eng_title_posting_list, eng_document_posting_list, eng_total_documents = eng_create_index(
                     "prepared_english.csv")
+
                 print(eng_title_posting_list, "\n", eng_document_posting_list)
             elif cmd == '3':
                 eng_save_index(eng_title_posting_list, eng_document_posting_list)
@@ -103,13 +104,13 @@ if __name__ == '__main__':
             elif cmd =='12':
                 print("Enter Query like : word1 /range word2")
                 query = input()
-                key1 , key2 , size =proccess_query(query)
+                key1 , key2 , size = proccess_query(query)
                 doc_id_founded = CalculateOccurences(key1,key2,size)
+                print("founded from proximity search: ",doc_id_founded)
                 for i in range(eng_total_documents):
                     if i not in doc_id_founded:
-                        eng_title_posting_list,eng_document_posting_lis,eng_total_documentst= eng_delete_index(i,eng_title_posting_list ,eng_document_posting_list,eng_total_documents)
-                print(doc_id_founded)
-                search(key1+' '+key2 , eng_title_posting_list,eng_document_posting_list, eng_total_documents )
+                        eng_title_posting_list,eng_document_posting_lis,eng_total_documents= eng_delete_index(i,eng_title_posting_list ,eng_document_posting_list,eng_total_documents)
+                search(key1+' '+key2 , eng_title_posting_list,eng_document_posting_list, eng_total_documents)
 
             elif cmd == '13':
                 break
@@ -143,7 +144,7 @@ if __name__ == '__main__':
                 print(persian_preproccess.most_freq_words())
             elif cmd == '2':
                 wiki_title_posting_list, wiki_document_posting_list, wiki_total_documents = wiki_create_index(
-                    "Presian_preproccess/prepared_persian.csv")
+                    "prepared_persian.csv")
                 print(wiki_title_posting_list, "\n", wiki_document_posting_list)
             elif cmd == '3':
                 wiki_save_index(wiki_title_posting_list, wiki_document_posting_list)
@@ -206,10 +207,11 @@ if __name__ == '__main__':
                 query = input()
                 key1 , key2 , size =proccess_query(query)
                 doc_id_founded = persian_CalculateOccurences(key1,key2,size)
+                print("founded from proximity search: ",doc_id_founded)
+
                 for i in range(wiki_total_documents):
                     if i not in doc_id_founded:
-                        wiki_title_posting_list,wiki_document_posting_lis,wiki_total_documentst= eng_delete_index(i,wiki_title_posting_list ,wiki_document_posting_list,wiki_total_documents)
-                print(doc_id_founded)
+                        wiki_title_posting_list,wiki_document_posting_lis,wiki_total_documentst= wiki_delete_index(i,wiki_title_posting_list ,wiki_document_posting_list,wiki_total_documents)
                 search(key1+' '+key2 ,wiki_title_posting_list, wiki_document_posting_list, wiki_total_documents)
 
             elif cmd == '13':
