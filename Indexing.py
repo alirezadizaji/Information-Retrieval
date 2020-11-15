@@ -44,6 +44,7 @@ def eng_create_index(path):
 
 
 def eng_delete_index(doc_id, eng_title_posting_list, eng_document_posting_list, eng_total_documents):
+
     # global eng_title_posting_list, eng_document_posting_list
 
     for k in eng_title_posting_list.keys():
@@ -54,7 +55,7 @@ def eng_delete_index(doc_id, eng_title_posting_list, eng_document_posting_list, 
         if doc_id in eng_document_posting_list[k].keys():
             # print(document_posting_list[k][doc_id])
             del eng_document_posting_list[k][doc_id]
-    eng_total_documents -= 1
+    # eng_total_documents -= 1
     return eng_title_posting_list, eng_document_posting_list, eng_total_documents
 
 
@@ -247,6 +248,7 @@ def wiki_create_index(path):
     ids = 0
     for doc_id, title, document in zip(id, titles, documents):
         # print(doc_id, "    ", title, "  ", document)
+            print(title)
             title_words = title.split(" ")
             document_words = document.split(" ")
             for i, t in enumerate(title_words):
@@ -271,7 +273,7 @@ def wiki_delete_index(doc_id, title_posting_list, document_posting_list, wiki_to
         if doc_id in document_posting_list[k].keys():
             # print(document_posting_list[k][doc_id])
             del document_posting_list[k][doc_id]
-    wiki_total_documents -= 1
+    # wiki_total_documents -= 1
     return title_posting_list, document_posting_list, wiki_total_documents
 
 

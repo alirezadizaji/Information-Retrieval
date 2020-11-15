@@ -89,7 +89,12 @@ def PreProccess():
 
     d = {'id':ids,'title': final_title, 'text':final_text}
     for i in range(len(d['title'])):
+        if len(d['title'][i]) == 0:
+            d['title'][i] = "No title"
+
+    for i in range(len(d['text'])):
         if len(d['text'][i]) == 0:
             d['text'][i] = "No text"
+
     df_ = pd.DataFrame(d)
     df_.to_csv(r'prepared_persian.csv')
