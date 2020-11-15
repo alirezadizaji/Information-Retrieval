@@ -115,7 +115,7 @@ def persian_CalculateOccurences(keyword1 , keyword2,window_range):
             if totalOccurences_des >0:
                 founded_result.append(text.index(w))
                 # print(text.index(w),w,'\n' , key1Occurences,key2Occurences,totalOccurences_des ,'\n')
-    return "proximity founded", founded_result
+    return founded_result
 
 
 
