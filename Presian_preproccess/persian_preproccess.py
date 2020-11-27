@@ -1,3 +1,4 @@
+import nltk
 from hazm import Normalizer, word_tokenize, Stemmer, WordTokenizer, stopwords_list ,Lemmatizer
 import re
 import pandas as pd
@@ -19,7 +20,7 @@ def listToString(lst):
 
 
 def extract_data_as_string():
-    df = pd.read_csv("Persian.csv" )
+    df = pd.read_csv("/Users/atena/phase_1_part1/Persion_preproccess/Persian.csv" )
     titles=listToString(df["page_title"])
     text = listToString(df["text"])
     return  titles , text ,df["page_id"]
@@ -36,20 +37,32 @@ def prepare_text(text):
     words = [w for w in words if w not in stopwords_list()]
     words = [lemmatizer.lemmatize(w) for w in words]
     words = ' '.join(words)
+
     return words
 
-def pre_proccess(lst):
+def pre_proccess(textlst,titlelst):
     print("Start preproccessing ...")
     pre_title =[]
+    pre_text=[]
 
-    for title in lst:
+    for title in titlelst:
        pre_title.append(prepare_text(title))
 
+    for text in textlst:
+       pre_text.append(prepare_text(text))
     print("Done preproccessing.")
-    return pre_title
+    return pre_text,pre_title
 
 
 
+
+def most_freq_words():
+    title , text, ids = extract_data_as_string()
+
+    listToStr = ' '.join(map(str, title+ text))
+    listToStr = word_tokenize(listToStr)
+    word_count = nltk.FreqDist(listToStr)
+    return word_count.most_common(30)
 
 stemmer = Stemmer()
 lemmatizer = Lemmatizer()
@@ -66,11 +79,22 @@ tokenizer.emoji_repl = '.'
 tokenizer.link_repl = '.'
 punctuations = r"""!"#$%&'()*+,-./:;<=>?@[\]^_`؟،{|}~"""
 
-conversion("Persian.xml")
-title , text, ids = extract_data_as_string()
-final_text = pre_proccess(text)
-final_title = pre_proccess(title)
 
-d = {'title': final_title, 'id':ids,'text':final_text}
-df = pd.DataFrame(d)
-df.to_csv(r'prepared_persian.csv')
+def PreProccess():
+    title , text, ids = extract_data_as_string()
+
+    conversion("/Users/atena/phase_1_part1/Persion_preproccess/Persian.xml")
+    final_text,final_title = pre_proccess(text,title)
+    # most_freq_words(title,text)
+
+    d = {'id':ids,'title': final_title, 'text':final_text}
+    for i in range(len(d['title'])):
+        if len(d['title'][i]) == 0:
+            d['title'][i] = "No title"
+
+    for i in range(len(d['text'])):
+        if len(d['text'][i]) == 0:
+            d['text'][i] = "No text"
+
+    df_ = pd.DataFrame(d)
+    df_.to_csv(r'prepared_persian.csv')
