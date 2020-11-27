@@ -2,9 +2,10 @@ import numpy as np
 from sklearn.model_selection import KFold
 from scipy import stats as stat
 #
-X = np.zeros((1000, 15000))
-y = np.zeros((1000))
+X = np.zeros((10, 1500))
+y = np.zeros((10))
 y[500:] = 1
+y[:500] = -1
 kf = KFold(5)
 
 kf_idxs = []
@@ -23,13 +24,18 @@ def check_multi_dim(arr):
         arr = arr[:, np.newaxis]
     return arr
 
+
+def smoothing(arr):
+    return arr + 1
+
 #get best k and validation results
 def analyze_report(report, K, mode="Train"):
         unit_res = np.mean(report, axis=0) if len(report.shape) == 3 else report #mean for KFold
         shape = unit_res.shape
         best_k, best_res = -1, (0, 0, 0, 0, 0, 0, 0)
         for i, k in zip(range(shape[1]), K):
-            tp, fp, tn, fn = unit_res[:, i]
+            tp, fp, tn, fn = smoothing(unit_res[:, i])
+
             pr_pos = tp / (tp + fp)
             rc_pos = tp / (tp + fn)
 
@@ -62,10 +68,11 @@ def get_primary_result(y_val, y_pred):
     return np.vstack((tp, fp, tn, fn))
 
 def KNN(X, y, kf_idxs, K, mode="Train"):
-    shape = (len(kf_idxs), 4, len(K)) # 4 = tp, fp, tn, fn
-    report = np.zeros(shape)
-
     if mode == "Train":
+        assert isinstance(kf_idxs, (list, np.ndarray)) and isinstance(K, (list, np.ndarray))
+        shape = (len(kf_idxs), 4, len(K))  # 4 = tp, fp, tn, fn
+        report = np.zeros(shape)
+
         for i, (t_idx, v_idx) in enumerate(kf_idxs):
             X_train, y_train = X[t_idx], y[t_idx]
             X_val, y_val = X[v_idx], y[v_idx]
@@ -101,3 +108,5 @@ def KNN(X, y, kf_idxs, K, mode="Train"):
 
     else:
         print("Unknown mode!!!")
+
+KNN(X, y, kf_idxs, mode="Train", K=[1, 5, 9])
