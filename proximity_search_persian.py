@@ -36,7 +36,7 @@ def persian_CalculateOccurencesInRange(keyPositionsList, PositionToOccurencesMap
 def persian_CalculateOccurences(keyword1 , keyword2,window_range):
 
     founded_result  =[]
-    csv_data = pd.read_csv("prepared_persian.csv")
+    csv_data = pd.read_csv("Presian_preproccess/prepared_persian.csv")
     titles = csv_data['title']
     titles = listToString(titles)
 
