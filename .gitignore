@@ -6,4 +6,4 @@
 .idea
 /*.txt
 /*.pkl
-/__pycache__/
+*__pycache__*
