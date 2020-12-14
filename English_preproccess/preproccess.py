@@ -86,10 +86,10 @@ def PreProccess():
 
 
 
-def PreProccess_for_classifier():
+def PreProccess_for_classifier(train_path, test_path):
 
     #train
-    train_df = pd.read_csv('/Users/atena/PycharmProjects/Information-Retrieval-Project/Classifier/train.csv')
+    train_df = pd.read_csv(train_path)
     most_freq_words()
     print("Start preproccessing ...")
     train_d = {'title': pre_proccess(listToString(train_df["title"])), 'description':pre_proccess(listToString(train_df["description"])),'views':train_df['views']}
@@ -102,7 +102,7 @@ def PreProccess_for_classifier():
     train_df_.to_csv(r'prepared_train.csv')
 
     #test
-    test_df = pd.read_csv('/Users/atena/PycharmProjects/Information-Retrieval-Project/Classifier/test.csv')
+    test_df = pd.read_csv(test_path)
     most_freq_words()
     print("Start preproccessing ...")
     test_d = {'title': pre_proccess(listToString(test_df["title"])), 'description':pre_proccess(listToString(test_df["description"])),'views':test_df['views']}
