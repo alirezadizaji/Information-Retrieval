@@ -75,7 +75,7 @@ def analyze_report(report, cfr, mode="Train", params=None):
               "F1_pos, Pr_pos, Rc_pos, F1_neg, Pr_neg, Rc_neg): {}"
               .format(mode, res))
 
-def tf_idf_ntn(col):
+def tf_idf_ntn(col, vocab):
     N = len(col)
     tf, df = {}, {}
     for i, doc in enumerate(col):
@@ -90,11 +90,10 @@ def tf_idf_ntn(col):
             df_checked.append(t)
 
     idf = {k: math.log(N / v) for k,v in df.items()}
-    words = sorted(list(df.keys()))
-    tf_idf = np.zeros((N, len(words)))
+    tf_idf = np.zeros((N, len(vocab)))
     for i, doc in enumerate(col):
         tokens = doc.split()
         for t in tokens:
-            j = words.index(t)
+            j = vocab.index(t)
             tf_idf[i][j] = tf[t][i] * idf[t]
     return tf_idf
