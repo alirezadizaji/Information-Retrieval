@@ -15,10 +15,11 @@ import numpy as np
 
 
 def calc_tf(tf):
-    if tf == 0:
-        return 1
-    else:
-        return 1 + math.log(tf, 10)
+    return tf
+    # if tf == 0:
+    #     return 1
+    # else:
+    #     return 1 + math.log(tf, 10)
 
 
 def calc_idf(df, tot_documents):
@@ -74,7 +75,7 @@ def calc_title_weights(title_tf, title_idf):
             w += title_tf[d][t] ** 2
 
 
-        w = math.sqrt(w)
+        w = 1
         for t in range(title_tf.shape[1]):
             if w == 0:
                 w = 1
@@ -89,7 +90,7 @@ def calc_text_weights(text_tf, text_idf):
         for t in range(text_tf.shape[1]):
             text_tf[d][t] = text_tf[d][t] * text_idf[t]
             w += text_tf[d][t] ** 2
-        w = math.sqrt(w)
+        w = 1
         for t in range(text_tf.shape[1]):
             if w == 0:
                 w=1
@@ -114,7 +115,7 @@ def ltc_lnc(header, query, title_weights, text_weights, title_term_to_number, te
         w = 0
         for q in query_.keys():
             w += query_[q] ** 2
-        w = math.sqrt(w)
+        w = 1
         for q in query_.keys():
             query_[q] = query_[q] / w
         scores = [0] * tot_documents
@@ -127,7 +128,7 @@ def ltc_lnc(header, query, title_weights, text_weights, title_term_to_number, te
         w = 0
         for q in query_.keys():
             w += query_[q] ** 2
-        w = math.sqrt(w)
+        w = 1
         for q in query_.keys():
             query_[q] = query_[q] / w
         scores = [0] * tot_documents
