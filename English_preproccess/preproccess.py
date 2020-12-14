@@ -83,3 +83,33 @@ def PreProccess():
     df_ = pd.DataFrame(d)
     df_.to_csv(r'prepared_english.csv')
 
+
+
+
+def PreProccess_for_classifier():
+
+    #train
+    train_df = pd.read_csv('/Users/atena/PycharmProjects/Information-Retrieval-Project/Classifier/train.csv')
+    most_freq_words()
+    print("Start preproccessing ...")
+    train_d = {'title': pre_proccess(listToString(train_df["title"])), 'description':pre_proccess(listToString(train_df["description"])),'views':train_df['views']}
+    print("Done preproccessing.")
+    for i in range(len(train_d['title'])):
+        if len(train_d['title'][i]) == 0:
+            train_d['title'][i] = "No description"
+
+    train_df_ = pd.DataFrame(train_d)
+    train_df_.to_csv(r'prepared_train.csv')
+
+    #test
+    test_df = pd.read_csv('/Users/atena/PycharmProjects/Information-Retrieval-Project/Classifier/test.csv')
+    most_freq_words()
+    print("Start preproccessing ...")
+    test_d = {'title': pre_proccess(listToString(test_df["title"])), 'description':pre_proccess(listToString(test_df["description"])),'views':test_df['views']}
+    print("Done preproccessing.")
+    for i in range(len(test_d['title'])):
+        if len(test_d['title'][i]) == 0:
+            test_d['title'][i] = "No description"
+
+    test_df_ = pd.DataFrame(test_d)
+    test_df_.to_csv(r'prepared_test.csv')
