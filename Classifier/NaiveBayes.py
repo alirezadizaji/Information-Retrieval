@@ -19,7 +19,6 @@ def word_prob(term_to_number, train_terms, train_labels):
     total_terms = [0] * 2
     for t in word_count:
         for i, c in enumerate(t):
-            print(i, c)
             total_terms[i] += c
     # print("total_terms:", total_terms)
     B = len(term_to_number)
