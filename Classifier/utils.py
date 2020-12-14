@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 from sklearn.model_selection import KFold
 
@@ -11,7 +13,7 @@ def get_pos_negs(y_val, y_pred):
     tn = np.sum((y_val == -1) * (y_pred == -1), axis=0)
     fp = np.sum(y_pred == 1, axis=0) - tp
     fn = np.sum(y_pred == -1, axis=0) - tn
-    return np.vstack((tp, fp, tn, fn))
+    return np.vstack((tp, fp, tn, fn)).squeeze()
 
 def create_KF_idxs(X_train, k=5):
     KF = KFold(k, shuffle=True)
@@ -72,3 +74,27 @@ def analyze_report(report, cfr, mode="Train", params=None):
         print("{} Result -> (Acc, "
               "F1_pos, Pr_pos, Rc_pos, F1_neg, Pr_neg, Rc_neg): {}"
               .format(mode, res))
+
+def tf_idf_ntn(col):
+    N = len(col)
+    tf, df = {}, {}
+    for i, doc in enumerate(col):
+        tokens = doc.split()
+        df_checked = []
+        for t in tokens:
+            tf.setdefault(t, {})
+            tf[t].setdefault(i, 0)
+            tf[t][i] += 1
+            df.setdefault(t, 0)
+            df[t] = df[t] + 1 if t not in df_checked else df[t]
+            df_checked.append(t)
+
+    idf = {k: math.log(N / v) for k,v in df.items()}
+    words = sorted(list(df.keys()))
+    tf_idf = np.zeros((N, len(words)))
+    for i, doc in enumerate(col):
+        tokens = doc.split()
+        for t in tokens:
+            j = words.index(t)
+            tf_idf[i][j] = tf[t][i] * idf[t]
+    return tf_idf
