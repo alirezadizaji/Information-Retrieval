@@ -4,6 +4,6 @@
 /.venv/
 /.env
 .idea
-/*.txt
+#/*.txt
 /*.pkl
 *__pycache__*
