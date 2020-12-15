@@ -121,12 +121,12 @@ class Kernel(object):
 
 def SVM(margin):
 
-    train = pd.read_csv("/Users/atena/PycharmProjects/Information-Retrieval-Project/Classifier/prepared_train.csv")
+    train = pd.read_csv("/Users/atena/PycharmProjects/Information-Retrieval-Project/models/prepared_train.csv")
     x_train_title = train['title']
     x_train_description = train['description']
 
     y_train = train['views']
-    test = pd.read_csv("/Users/atena/PycharmProjects/Information-Retrieval-Project/Classifier/prepared_test.csv")
+    test = pd.read_csv("/Users/atena/PycharmProjects/Information-Retrieval-Project/models/prepared_test.csv")
     x_test_title = train['title']
     x_tset_description = test['description']
 

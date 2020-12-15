@@ -41,7 +41,7 @@ if __name__ == '__main__':
                 print(preproccess.most_freq_words())
             elif cmd == '2':
                 eng_title_posting_list, eng_document_posting_list, eng_total_documents = eng_create_index(
-                    "English_preproccess/prepared_english.csv")
+                    "datasets/phase1/prepared_english.csv")
 
                 print(eng_title_posting_list, "\n", eng_document_posting_list)
             elif cmd == '3':
@@ -144,7 +144,7 @@ if __name__ == '__main__':
                 print(persian_preproccess.most_freq_words())
             elif cmd == '2':
                 wiki_title_posting_list, wiki_document_posting_list, wiki_total_documents = wiki_create_index(
-                    "Presian_preproccess/prepared_persian.csv")
+                    "datasets/phase1/prepared_persian.csv")
                 print(wiki_title_posting_list, "\n", wiki_document_posting_list)
             elif cmd == '3':
                 wiki_save_index(wiki_title_posting_list, wiki_document_posting_list)
