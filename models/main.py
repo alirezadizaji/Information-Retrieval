@@ -19,23 +19,31 @@ def get_cfr(type):
         raise Exception("Unknown mode!!!")
     return model
 
-def conv2vec(df, vocabs, mode, y_label="views"):
-    X, y = df.drop(y_label, axis=1).to_numpy(), df[y_label].to_numpy()
-    cols = list(vocabs.keys())
-    X = np.concatenate([tf_idf_ntn(doc, vocabs[c]) for c, doc in zip(cols, X.T)], axis=1)
+def conv2vec(df, vocab, mode, y_label="views"):
+    X, y = df.drop(y_label, axis=1).apply(' '.join, axis=1).to_numpy(), df[y_label].to_numpy()
+    X = tf_idf_ntn(X, vocab)
     print(X.shape)
     # plot_tsne(X, y, "{} Dataset (separated features)".format(mode))
     return X, y
 
+
 if __name__ == '__main__':
-    type="RFC"
+    type="KNN"
     train_df = pd.read_csv(train_path, index_col=0)
     test_df = pd.read_csv(test_path, index_col=0)
-    vocabs = unique_words()
-    X_train, y_train = conv2vec(train_df, vocabs, "Train")
-    X_test, y_test = conv2vec(test_df, vocabs, "Test")
+    vocab = bag_of_words()
+    X_train, y_train = conv2vec(train_df, vocab, "Train")
+    X_test, y_test = conv2vec(test_df, vocab, "Test")
+
     KF_idxs = create_KF_idxs(X_train, k=5)
     model = get_cfr(type)
-    cfr = model(params= {"mode": "Train", "X": X_train, "y": y_train, "KF_idxs": KF_idxs})
-    cfr = model(params= {"mode": "Test", "X": X_test, "y": y_test, "cfr": cfr})
 
+    print("------------{}-----------".format(type))
+    if type == "RFC":
+        cfr = model(params= {"mode": "Train", "X": X_train, "y": y_train, "KF_idxs": KF_idxs})
+        cfr = model(params= {"mode": "Test", "X": X_test, "y": y_test, "cfr": cfr})
+    elif type == "KNN":
+        K = [1, 5, 9]
+        best_k = model(params={"mode": "Train", "X": X_train, "y": y_train, "KF_idxs": KF_idxs, "K": K})
+        model(params={"mode": "Test", "X_train": X_train, "y_train": y_train,
+                            "X_test": X_test, "y_test": y_test,"k": best_k})

@@ -82,15 +82,17 @@ def analyze_report(report, cfr, mode="Train", params=None):
         return res
 
     if cfr == "KNN":
-        K = params["k"]
+        K = params["K"]
         pos_negs = np.mean(report, axis=0) if len(report.shape) == 3 else report  # mean for KFold
         shape = pos_negs.shape
+        pos_negs = pos_negs[:, np.newaxis] if len(shape) == 1 else pos_negs
+        new_shape = pos_negs.shape
+
         best_k, best_res = -1, (0, 0, 0, 0, 0, 0, 0)
-        for i, k in zip(range(shape[1]), K):
+        for i, k in zip(range(new_shape[1]), K):
             res = get_res(pos_negs[:, i])
             new_acc = res[0]
             prev_acc = best_res[0]
-
             if new_acc >= prev_acc:
                 best_k = k
                 best_res = res
@@ -133,8 +135,7 @@ def tf_idf_ntn(col, vocab):
             tf_idf[i][j] = tf[t][i] * idf[t]
     return tf_idf
 
-def unique_words(y_label="views"):
-    vocabs = []
+def bag_of_words(y_label="views"):
     root = "../datasets"
     phase1 = os.path.join(root, "phase1")
     phase2 = os.path.join(root, "phase2")
@@ -142,23 +143,20 @@ def unique_words(y_label="views"):
     phase2_files = [os.path.join(phase2, f) for f in ["prepared_test.csv", "prepared_train.csv"]]
     csv_files = [phase1_file]
     csv_files.extend(phase2_files)
+
     datasets = []
     for f in csv_files:
         df = pd.read_csv(f, index_col=0)
         if y_label in df.columns:
             df.drop(y_label, inplace=True, axis=1)
-        datasets.append(df.to_numpy())
+        doc_set = df.apply(' '.join, axis=1).to_numpy() #concat all columns
+        datasets.append(doc_set)
 
-    X = np.concatenate(datasets, axis=0)
-    for collection in X.T:
-        vocab = set()
-        for doc in collection:
-            token = doc.split()
-            for t in token:
-                vocab.add(t)
-        vocab = sorted(list(vocab))
-        vocabs.append(vocab)
+    X = np.concatenate(datasets, axis=0).squeeze()
+    vocab = set()
+    for doc in X:
+        tokens = doc.split()
+        for t in tokens:
+            vocab.add(t)
 
-    cols = ["title", "description"]
-    vocabs = {k: v for k,v in zip(cols, vocabs)}
-    return vocabs
+    return sorted(list(vocab))

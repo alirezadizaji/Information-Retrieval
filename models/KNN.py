@@ -7,7 +7,7 @@ def KNN(params):
     mode = params["mode"]
 
     if mode == "Train":
-        keys = ["KF_idxs", "K", "X_train", "y_train"]
+        keys = ["KF_idxs", "K", "X", "y"]
         KF_idxs, K, X, y = (params[k] for k in keys)
         report = np.zeros((len(KF_idxs), 4, len(K))) # 4 = tp, fp, tn, fn
 
@@ -26,7 +26,8 @@ def KNN(params):
                     y_pred[j, l] = stat.mode(y_nearest)[0]
 
             report[i] = get_pos_negs(y_val, y_pred)
-        return analyze_report(report, "KNN", mode, params={"K": K})
+        best_k = analyze_report(report, "KNN", mode, params={"K": K})
+        return best_k
 
     elif mode == "Test":
         keys = ["k", "X_train", "y_train", "X_test", "y_test"]
@@ -40,7 +41,7 @@ def KNN(params):
             y_pred[i] = stat.mode(y_nearest)[0]
 
         report = get_pos_negs(y_test, y_pred)
-        analyze_report(report, "KNN", mode, params={"K": [K]})
+        analyze_report(report, "KNN", mode, params={"K": [k]})
 
     else:
         print("Unknown mode!!!")
