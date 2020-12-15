@@ -8,7 +8,7 @@ from Presian_preproccess import xml_to_csv
 def conversion(filename):
     persian_wiki_xml_data_dir = filename
     xml_to_csv.xml_to_csv_method(persian_wiki_xml_data_dir, ',')
-    PERSIAN_DIR = "Persian.csv"
+    PERSIAN_DIR = "../datasets/phase1/Persian.csv"
 
 def listToString(lst):
     string = []

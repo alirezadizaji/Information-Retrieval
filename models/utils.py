@@ -1,7 +1,42 @@
 import math
-
 import numpy as np
 from sklearn.model_selection import KFold
+from sklearn.manifold import TSNE
+import pandas as pd
+import seaborn as sn
+import matplotlib.pyplot as plt
+import os
+
+
+def plot_tsne(X, y, title):
+  if not isinstance(X, np.ndarray) or not isinstance(y, np.ndarray):
+    X = np.array(X)
+    y = np.array(y)
+
+  y = np.squeeze(y)
+  size = X.shape[0]
+  X = X.reshape(size, -1)
+  print("------")
+  print(X.shape, y.shape)
+  print("------")
+  # scaler = StandardScaler()
+  # x = scaler.fit_transform(x)
+  # print(scaler.mean_.shape, scaler.var_.shape)
+
+  perp_range = [15]
+  num_iter_range = [1000]
+  for num_iter in num_iter_range:
+    for perp in perp_range:
+      model = TSNE(n_components=2, random_state=0, perplexity=perp, n_iter=num_iter)
+      tsne_data = model.fit_transform(X)
+      tsne_data = np.vstack((tsne_data.T, y)).T
+      tsne_df = pd.DataFrame(data=tsne_data, columns=("Dim_1", "Dim_2", "label"))
+      sn.FacetGrid(tsne_df, hue="label", size=6).map(plt.scatter, 'Dim_1', 'Dim_2').add_legend()
+      plt.subplots_adjust(top=0.95)
+      plt.title(title)
+      dir = os.path.join("../plots", "{}_{}_{}.jpg".format(title, perp, num_iter))
+      plt.savefig(dir)
+      print("completed with perp: {}, n_iter: {}".format(perp, num_iter))
 
 
 def smoothing(arr):
@@ -97,3 +132,33 @@ def tf_idf_ntn(col, vocab):
             j = vocab.index(t)
             tf_idf[i][j] = tf[t][i] * idf[t]
     return tf_idf
+
+def unique_words(y_label="views"):
+    vocabs = []
+    root = "../datasets"
+    phase1 = os.path.join(root, "phase1")
+    phase2 = os.path.join(root, "phase2")
+    phase1_file = os.path.join(phase1, "prepared_english.csv")
+    phase2_files = [os.path.join(phase2, f) for f in ["prepared_test.csv", "prepared_train.csv"]]
+    csv_files = [phase1_file]
+    csv_files.extend(phase2_files)
+    datasets = []
+    for f in csv_files:
+        df = pd.read_csv(f, index_col=0)
+        if y_label in df.columns:
+            df.drop(y_label, inplace=True, axis=1)
+        datasets.append(df.to_numpy())
+
+    X = np.concatenate(datasets, axis=0)
+    for collection in X.T:
+        vocab = set()
+        for doc in collection:
+            token = doc.split()
+            for t in token:
+                vocab.add(t)
+        vocab = sorted(list(vocab))
+        vocabs.append(vocab)
+
+    cols = ["title", "description"]
+    vocabs = {k: v for k,v in zip(cols, vocabs)}
+    return vocabs

@@ -7,3 +7,4 @@ six==1.15.0
 hazm
 sklearn
 scipy
+seaborn

@@ -4,6 +4,7 @@
 /.venv/
 /.env
 /myvenv/
+/plots/
 .idea
 #/*.txt
 /*.pkl
