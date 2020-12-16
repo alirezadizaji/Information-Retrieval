@@ -1,7 +1,10 @@
 import pandas as pd
 import numpy as np
+from sklearn import metrics
+
 from English_preproccess import preproccess
 from Indexing import eng_create_index
+from models.utils import *
 
 
 def prior_prob(train_labels):
@@ -38,48 +41,47 @@ def predict_label(query, cond_prob, prior, term_to_number):
     return label
 
 
-def naive_bayes():
-    # todo use train data from prepared csv
-    title_posting_list, document_posting_list, total_documents = eng_create_index(
-        "C:/Users/Sabrineh Mokhtari/Desktop/darC/Term-7/MIR/Project/p2/project_phase2/Implementation/data.csv")
+def NB(params):
+    mode = params["mode"]
+    if mode == "Train":
+        title_posting_list, document_posting_list, total_documents = eng_create_index(
+            "C:/Users/Sabrineh Mokhtari/Desktop/darC/Term-7/MIR/Project/p2/project_phase2/Implementation/datasets/phase2/prepared_train.csv")
+        train_df = pd.read_csv(
+            "C:/Users/Sabrineh Mokhtari/Desktop/darC/Term-7/MIR/Project/p2/project_phase2/Implementation/datasets/phase2/prepared_train.csv")
+        train_df = pd.DataFrame(train_df)
+        train_labels = train_df['views'].replace(-1, 0)
+        train_title_terms = train_df['title']
+        train_text_terms = train_df['description']
+        train_terms = train_title_terms + " " + train_text_terms
 
-    df = pd.read_csv(
-        "C:/Users/Sabrineh Mokhtari/Desktop/darC/Term-7/MIR/Project/p2/project_phase2/Implementation/data.csv")
-    df = pd.DataFrame(df)
-    train_labels = df['views'].replace(-1, 0)
-    train_title_terms = df['title']
-    train_text_terms = df['description']
+        title_terms = list(title_posting_list.keys())
+        text_terms = list(document_posting_list.keys())
+        terms = set(title_terms + text_terms)
+        terms_to_number = {t: i for i, t in enumerate(terms)}
 
-    # todo use test data from prepared csv
-    test_df = pd.read_csv(
-        "C:/Users/Sabrineh Mokhtari/Desktop/darC/Term-7/MIR/Project/p2/project_phase2/Implementation/data.csv")
-    test_df = pd.DataFrame(test_df)
-    test_title_terms = test_df['title']
-    test_text_terms = test_df['description']
+        prior = prior_prob(train_labels)
+        cond_prob = word_prob(terms_to_number, train_terms, train_labels)
 
-    title_terms = list(title_posting_list.keys())
-    title_term_to_number = {t: i for i, t in enumerate(title_terms)}
+        return prior, cond_prob, terms_to_number
 
-    text_terms = list(document_posting_list.keys())
-    text_term_to_number = {t: i for i, t in enumerate(text_terms)}
+    elif mode == "Test":
+        cond_prob = params["cond_prob"]
+        prior = params["prior"]
+        terms_to_number = params["terms_to_number"]
 
-    prior = prior_prob(train_labels)
-    title_cond_prob = word_prob(title_term_to_number, train_title_terms, train_labels)
-    text_cond_prob = word_prob(text_term_to_number, train_text_terms, train_labels)
+        test_df = pd.read_csv(
+            "C:/Users/Sabrineh Mokhtari/Desktop/darC/Term-7/MIR/Project/p2/project_phase2/Implementation/datasets/phase2/prepared_test.csv")
+        test_df = pd.DataFrame(test_df)
+        test_labels = test_df['views']
+        test_title_terms = test_df['title']
+        test_text_terms = test_df['description']
+        test_terms = test_title_terms + " " + test_text_terms
 
-    title_predictions = []
-    text_predictions = []
-    for title_q, text_q in zip(test_title_terms, test_text_terms):
-        title_predict = predict_label(title_q, title_cond_prob, prior, title_term_to_number)
-        title_predictions.append(title_predict)
-        text_predict = predict_label(text_q, text_cond_prob, prior, text_term_to_number)
-        text_predictions.append(text_predict)
+        predictions = []
+        for q in test_terms:
+            predictions.append(predict_label(q, cond_prob, prior, terms_to_number))
 
-    print("prior_probabilities:", prior)
-    print("title_condition_probabilities:", title_cond_prob)
-    print("text_condition_probabilities:", text_cond_prob)
-    print("title_predictions:", title_predictions)
-    print("text_predictions:", text_predictions)
+        report = get_pos_negs(np.array(list(test_labels)), np.array(predictions))
+        analyze_report(report, "NaiveBayes", "Test")
 
 
-naive_bayes()
