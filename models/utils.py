@@ -112,6 +112,12 @@ def analyze_report(report, cfr, mode="Train", params=None):
               "F1_pos, Pr_pos, Rc_pos, F1_neg, Pr_neg, Rc_neg): {}"
               .format(mode, res))
 
+    elif cfr == "NaiveBayes":
+        res = get_res(report)
+        print("{} Result -> (Acc, "
+              "F1_pos, Pr_pos, Rc_pos, F1_neg, Pr_neg, Rc_neg): {}"
+              .format(mode, res))
+
 def tf_idf_ntn(col, vocab):
     N = len(col)
     tf, df = {}, {}
