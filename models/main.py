@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+
+from NaiveBayes import NB
 from KNN import KNN
 from RFC import Random_Forest
 from utils import *
@@ -15,6 +17,8 @@ def get_cfr(type):
         model = Random_Forest
     elif type == "KNN":
         model = KNN
+    elif type == "NaiveBayes":
+        model = NB
     else:
         raise Exception("Unknown mode!!!")
     return model
@@ -28,7 +32,7 @@ def conv2vec(df, vocab, mode, y_label="views"):
 
 
 if __name__ == '__main__':
-    type="KNN"
+    type="NaiveBayes"
     train_df = pd.read_csv(train_path, index_col=0)
     test_df = pd.read_csv(test_path, index_col=0)
     vocab = bag_of_words()
@@ -47,3 +51,6 @@ if __name__ == '__main__':
         best_k = model(params={"mode": "Train", "X": X_train, "y": y_train, "KF_idxs": KF_idxs, "K": K})
         model(params={"mode": "Test", "X_train": X_train, "y_train": y_train,
                             "X_test": X_test, "y_test": y_test,"k": best_k})
+    elif type == "NaiveBayes":
+        prior, cond_prob, terms_to_number = model(params={"mode": "Train"})
+        model(params={"mode": "Test", "prior": prior, "cond_prob": cond_prob, "terms_to_number": terms_to_number})
