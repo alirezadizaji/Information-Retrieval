@@ -4,6 +4,7 @@ import numpy as np
 from NaiveBayes import NB
 from KNN import KNN
 from RFC import Random_Forest
+from models.SVM import SVM
 from utils import *
 # from English_preproccess import preproccess
 # preproccess.PreProccess_for_classifier(train_path, test_path)
@@ -19,6 +20,8 @@ def get_cfr(type):
         model = KNN
     elif type == "NaiveBayes":
         model = NB
+    elif type == "SVM":
+        model = SVM
     else:
         raise Exception("Unknown mode!!!")
     return model
@@ -32,7 +35,7 @@ def conv2vec(df, vocab, mode, y_label="views"):
 
 
 if __name__ == '__main__':
-    type="NaiveBayes"
+    type="SVM"
     train_df = pd.read_csv(train_path, index_col=0)
     test_df = pd.read_csv(test_path, index_col=0)
     vocab = bag_of_words()
@@ -54,3 +57,8 @@ if __name__ == '__main__':
     elif type == "NaiveBayes":
         prior, cond_prob, terms_to_number = model(params={"mode": "Train"})
         model(params={"mode": "Test", "prior": prior, "cond_prob": cond_prob, "terms_to_number": terms_to_number})
+
+    elif type == "SVM":
+        C = [0.5, 1, 1.5, 2]
+        model(params={"mode":"Train","X_train":X_train,"y_train":y_train,"X_test":X_test,"y_test":y_test,"C":C})
+        model(params={"mode":"Test","X_train":X_train,"y_train":y_train,"X_test":X_test,"y_test":y_test,"C":C})
