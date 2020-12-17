@@ -4,7 +4,7 @@ import numpy as np
 from NaiveBayes import NB
 from KNN import KNN
 from RFC import Random_Forest
-from models.SVM import SVM
+from SVM import SVM
 from utils import *
 # from English_preproccess import preproccess
 # preproccess.PreProccess_for_classifier(train_path, test_path)
@@ -48,7 +48,8 @@ if __name__ == '__main__':
     print("------------{}-----------".format(type))
     if type == "RFC":
         cfr = model(params= {"mode": "Train", "X": X_train, "y": y_train, "KF_idxs": KF_idxs})
-        cfr = model(params= {"mode": "Test", "X": X_test, "y": y_test, "cfr": cfr})
+        model(params= {"mode": "Test", "X": X_test, "y": y_test, "cfr": cfr})
+
     elif type == "KNN":
         K = [1, 5, 9]
         best_k = model(params={"mode": "Train", "X": X_train, "y": y_train, "KF_idxs": KF_idxs, "K": K})
@@ -60,5 +61,5 @@ if __name__ == '__main__':
 
     elif type == "SVM":
         C = [0.5, 1, 1.5, 2]
-        model(params={"mode":"Train","X_train":X_train,"y_train":y_train,"X_test":X_test,"y_test":y_test,"C":C})
-        model(params={"mode":"Test","X_train":X_train,"y_train":y_train,"X_test":X_test,"y_test":y_test,"C":C})
+        cfr, best_c = model(params={"mode": "Train", "X": X_train, "y": y_train, "C": C, "split": 0.2})
+        model(params={"mode": "Test", "X": X_test, "y": y_test, "cfr": cfr, "C": best_c})

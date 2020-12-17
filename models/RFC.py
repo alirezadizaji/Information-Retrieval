@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.model_selection import KFold
 from scipy import stats as stat
 from sklearn.ensemble import RandomForestClassifier
-from models.utils import *
+from utils import *
 
 
 def Random_Forest(params):
@@ -24,7 +24,7 @@ def Random_Forest(params):
         analyze_report(report, "RFC", mode)
         return rfc
 
-    if mode == "Test":
+    elif mode == "Test":
         rfc = params["cfr"]
         X_test, y_test = X, y
         y_pred = rfc.predict(X_test)
