@@ -118,6 +118,22 @@ def analyze_report(report, cfr, mode="Train", params=None):
               "F1_pos, Pr_pos, Rc_pos, F1_neg, Pr_neg, Rc_neg): {}"
               .format(mode, res))
 
+    elif cfr == "SVM":
+        acc=[]
+        res=get_res(report)
+        C = params["C"]
+
+        if mode == "Train":
+            acc.append(res[0])
+            print("{} Result -> (Acc, "
+              "F1_pos, Pr_pos, Rc_pos, F1_neg, Pr_neg, Rc_neg): {}"
+                      .format(mode, res))
+
+        if mode == "Test":
+            print("{} Result -> (Acc, "
+              "F1_pos, Pr_pos, Rc_pos, F1_neg, Pr_neg, Rc_neg): {}"
+                      .format(mode, res))
+
 def tf_idf_ntn(col, vocab):
     N = len(col)
     tf, df = {}, {}
