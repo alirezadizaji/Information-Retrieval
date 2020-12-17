@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
-from sklearn import svm
-from sklearn import metrics
+from sklearn import svm, metrics
+from sklearn.metrics import *
 
 class SVMClassifier():
     def __init__(self, kernel, C=1.0, max_iter=1000, tol=0.001):
@@ -141,13 +141,17 @@ def SVM(margin):
     y_pred = clf.predict(x_test_title)
     y_pred_ = clf.predict(x_train_description)
 
+
+
+    print(confusion_matrix(y_test,y_pred))
+    print(classification_report(y_test,y_pred))
     print("Accuracy:",metrics.accuracy_score(y_train, y_pred))
-    print("Precision:",metrics.precision_score(y_test, y_pred))
-    print("Recall:",metrics.recall_score(y_test, y_pred))
+    # print("Precision:",metrics.precision_score(y_test, y_pred))
+    # print("Recall:",metrics.recall_score(y_test, y_pred))
 
     print("Accuracy:",metrics.accuracy_score(y_train, y_pred))
-    print("Precision:",metrics.precision_score(y_test, y_pred_))
-    print("Recall:",metrics.recall_score(y_test, y_pred_))
+    # print("Precision:",metrics.precision_score(y_test, y_pred_))
+    # print("Recall:",metrics.recall_score(y_test, y_pred_))
 
 
 # SVM()
