@@ -168,7 +168,7 @@ def bag_of_words(y_label="views"):
         df = pd.read_csv(f, index_col=0)
         if y_label in df.columns:
             df.drop(y_label, inplace=True, axis=1)
-        doc_set = df.apply(' '.join, axis=1).to_numpy() #concat all columns
+        doc_set = df.apply(' '.join, axis=1).to_numpy()
         datasets.append(doc_set)
 
     X = np.concatenate(datasets, axis=0).squeeze()
@@ -179,3 +179,28 @@ def bag_of_words(y_label="views"):
             vocab.add(t)
 
     return sorted(list(vocab))
+
+
+
+def store(X_test, y_val):
+
+    relevent_title=[]
+    relevent_desc=[]
+    non_relevent_title=[]
+    non_relevent_desc=[]
+    for i in range(len(X_test)):
+
+        if y_val[i] == 1:
+            relevent_title.append(X_test['title'][i])
+            relevent_desc.append(X_test['description'][i])
+        else:
+            non_relevent_title.append(X_test['title'][i])
+            non_relevent_desc.append(X_test['description'][i])
+
+    df_relevent={'title':relevent_title , 'description':relevent_desc}
+    df_nonrelevent={'title':non_relevent_title , 'description':non_relevent_desc}
+
+    df_r = pd.DataFrame(df_relevent)
+    df_n = pd.DataFrame(df_nonrelevent)
+    df_r.to_csv(r'../datasets/phase2/relevants.csv')
+    df_n.to_csv(r'../datasets/phase2/non_relevants.csv')

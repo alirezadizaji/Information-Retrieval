@@ -5,7 +5,7 @@ import pandas as pd
 from sklearn import svm, metrics
 from sklearn.metrics import *
 from utils import *
-from sklearn.model_selection import cross_val_score, KFold, train_test_split
+from sklearn.model_selection import train_test_split
 
 
 def SVM(params):
@@ -39,3 +39,20 @@ def SVM(params):
 
     else:
         print("Unknown mode!!!")
+
+
+
+
+def SVMClassifier(params):
+
+
+        keys = [ "C", "X_test", "X_train","Y_train"]
+        C, data,X,y = (params[k] for k in keys)
+        split = params["split"]
+        X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=split, shuffle=True)
+
+        clf = svm.SVC(kernel='rbf' ,gamma=0.001, C=C)
+        clf.fit(X_train, y_train)
+
+        y_pred = clf.predict(data)
+        return y_pred
