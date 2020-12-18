@@ -206,7 +206,7 @@ if __name__ == '__main__':
                 print("Enter Query like : word1 /range word2")
                 query = input()
                 key1 , key2 , size =proccess_query(query)
-                doc_id_founded = persian_CalculateOccurences(key1,key2,size)
+                doc_id_founded = persian_CalculateOccurences(key1,key2,size , "../datasets/phase1/prepared_english.csv")
                 print("founded from proximity search: ",doc_id_founded)
 
                 for i in range(wiki_total_documents):
