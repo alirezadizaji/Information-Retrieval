@@ -33,10 +33,10 @@ def CalculateOccurencesInRange(keyPositionsList, PositionToOccurencesMap, w_rang
 
 
 
-def CalculateOccurences(keyword1 , keyword2,window_range):
+def CalculateOccurences(keyword1 , keyword2,window_range , path):
 
     founded_result=[]
-    csv_data = pd.read_csv("/Users/atena/PycharmProjects/Information-Retrieval-Project/prepared_english.csv")
+    csv_data = pd.read_csv(path)
     titles = csv_data['title']
     titles = listToString(titles)
 
