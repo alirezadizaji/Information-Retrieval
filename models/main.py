@@ -12,7 +12,7 @@ from Indexing import *
 from proximity_search import *
 from retrieval import search
 
-train_path = "../datasets/phase2/prepared_train.csv"
+train_path = "../datasets/phase2/prepared_train.csv" #datas
 test_path = "../datasets/phase2/prepared_test.csv"
 lbl_r = '1'
 lbl_n= '-1'
