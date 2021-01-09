@@ -36,8 +36,8 @@ def json_to_csv(name):
 
     f = os.path.join(dir, name)
     df = pd.read_json(f)
-    if not has_vulnerable_values(df, "link", "title"):
-        df.drop("link", axis=1, inplace=True)
+    # if not has_vulnerable_values(df, "link", "title"):
+    #     df.drop("link", axis=1, inplace=True)
     new_name = name.replace("json", "csv")
     f = os.path.join(dir, new_name)
     df.to_csv(f, index=False)
@@ -63,5 +63,5 @@ def preprocess_csv(name):
         df[col] = df[col].apply(preprocess)
     df.to_csv(f, index=False)
 
-# json_to_csv("hamshahri.json")
-# preprocess_csv("hamshahri.csv")
+json_to_csv("hamshahri.json")
+preprocess_csv("hamshahri.csv")
