@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn import metrics
 
-from English_preproccess import preproccess
+from preprocess_english import preproccess
 from Indexing import eng_create_index
 from models.utils import *
 

@@ -7,7 +7,7 @@ from RFC import Random_Forest
 from SVM import *
 from utils import *
 
-from English_preproccess import preproccess
+from preprocess_english import preproccess
 from Indexing import *
 from proximity_search import *
 from retrieval import search
@@ -72,7 +72,7 @@ if __name__ == '__main__':
 
         if cmd == '0':
                 print("Enter classifier type:")
-                type="SVM"
+                type="RFC"
                 train_df = pd.read_csv(train_path, index_col=0)
                 test_df = pd.read_csv(test_path, index_col=0)
                 vocab = bag_of_words()

@@ -2,7 +2,7 @@ import nltk
 from hazm import Normalizer, word_tokenize, Stemmer, WordTokenizer, stopwords_list ,Lemmatizer
 import re
 import pandas as pd
-from Presian_preproccess import xml_to_csv
+from preproccess_persian import xml_to_csv
 
 
 def conversion(filename):
