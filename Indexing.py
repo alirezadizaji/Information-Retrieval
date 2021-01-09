@@ -5,8 +5,8 @@ import dill as dill
 import pandas as pd
 from collections import defaultdict
 # ------------------------------------#
-# import English_preproccess.preproccess as ep
-# import Presian_preproccess.preproccess as pp
+# import preprocess_english.preproccess as ep
+# import preproccess_persian.preproccess as pp
 import math
 import numpy as np
 

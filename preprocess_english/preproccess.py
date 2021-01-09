@@ -12,7 +12,7 @@ from collections import Counter
 remove_lst=[]
 
 def extract_data():
-    df = pd.read_csv('/Users/atena/PycharmProjects/Information-Retrieval-Project/English_preproccess/ted_talks.csv')
+    df = pd.read_csv('/Users/atena/PycharmProjects/Information-Retrieval-Project/preprocess_english/ted_talks.csv')
     return  df
 
 

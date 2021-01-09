@@ -1,8 +1,8 @@
-from English_preproccess import preproccess
+from preprocess_english import preproccess
 from Indexing import *
 from collections import defaultdict
 
-from Presian_preproccess import persian_preproccess
+from preproccess_persian import persian_preproccess
 from compress import load_index, create_distance_index, compress, save_index, decompress
 from proximity_search import proccess_query, CalculateOccurences
 from proximity_search_persian import persian_CalculateOccurences

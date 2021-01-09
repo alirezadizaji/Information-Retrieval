@@ -3,8 +3,8 @@ import math
 import numpy as np
 
 
-# import English_preproccess.preproccess as ep
-# import Presian_preproccess.preproccess as pp
+# import preprocess_english.preproccess as ep
+# import preproccess_persian.preproccess as pp
 
 # DOC_TYPE = 'Eng'
 
