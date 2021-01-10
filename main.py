@@ -186,7 +186,7 @@ if __name__ == '__main__':
                 bg_idx = load_bigram(path)
                 print("Enter query: ")
                 query = input()
-                query= persian_preproccess.prepare_text(query)
+                query= persian_preproccess.preprocess(query)
                 query = list(query.split())
                 ans = spell_correction(query, bg_idx, type1=False)
                 print(ans)
@@ -200,7 +200,7 @@ if __name__ == '__main__':
             elif cmd == '11':
                 print("Enter Query")
                 query = input()
-                query=persian_preproccess.prepare_text(query)
+                query=persian_preproccess.preprocess(query)
                 search(query, wiki_title_posting_list, wiki_document_posting_list, wiki_total_documents)
             elif cmd == '12':
                 print("Enter Query like : word1 /range word2")
