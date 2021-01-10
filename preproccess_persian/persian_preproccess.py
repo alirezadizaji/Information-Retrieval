@@ -25,7 +25,7 @@ def extract_data_as_string():
     text = listToString(df["text"])
     return  titles , text ,df["page_id"]
 
-def prepare_text(text):
+def preprocess(text):
     text = text.lower()
     text = re.sub('\d+', '', text)
     text = text.translate(str.maketrans(punctuations, ' ' * len(punctuations)))
@@ -36,9 +36,9 @@ def prepare_text(text):
     words = [w for w in words if w != '.']
     words = [w for w in words if w not in stopwords_list()]
     words = [lemmatizer.lemmatize(w) for w in words]
-    words = ' '.join(words)
+    pre_text = ' '.join(words)
 
-    return words
+    return pre_text
 
 def pre_proccess(textlst,titlelst):
     print("Start preproccessing ...")
@@ -46,10 +46,10 @@ def pre_proccess(textlst,titlelst):
     pre_text=[]
 
     for title in titlelst:
-       pre_title.append(prepare_text(title))
+       pre_title.append(preprocess(title))
 
     for text in textlst:
-       pre_text.append(prepare_text(text))
+       pre_text.append(preprocess(text))
     print("Done preproccessing.")
     return pre_text,pre_title
 
@@ -77,7 +77,7 @@ tokenizer.hashtag_repl = '.'
 tokenizer.id_repl = '.'
 tokenizer.emoji_repl = '.'
 tokenizer.link_repl = '.'
-punctuations = r"""!"#$%&'()*+,-./:;<=>?@[\]^_`؟،{|}~"""
+punctuations = r"""!"#$%&'()*+,-./:;<=>?@[\]^_`؟،{|}؛~"""
 
 
 def PreProccess():

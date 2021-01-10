@@ -1,30 +1,14 @@
-from hazm import Normalizer, word_tokenize, Stemmer, WordTokenizer, stopwords_list ,Lemmatizer
 import os
-import re
 import pandas as pd
 import numpy as np
-import category_encoders as ce
 import matplotlib.pyplot as plt
+from sklearn.manifold import TSNE
+
+from models.utils import tf_idf_ntn
+from sklearn.decomposition import PCA
+from preproccess_persian.persian_preproccess import preprocess
 
 dir = "../datasets/phase3"
-stemmer = Stemmer()
-lemmatizer = Lemmatizer()
-normalizer = Normalizer()
-
-def preprocess(text):
-    punctuations = r"""!"#$%&'()*+,-./:;<=>?@[\]^_`؟،{|}؛~"""
-    text = text.lower()
-    text = re.sub('\d+', '', text)
-    text = text.translate(str.maketrans(punctuations, ' ' * len(punctuations)))
-    text = ' '.join(re.sub(r'[^ضصثقفغعهخحجچشسیبلاتنمکگظطزرذدپوئژآؤ \n]', ' ', text).split())
-    text = text.strip()
-    normalized_text = normalizer.normalize(text)
-    words = word_tokenize(normalized_text)
-    words = [w for w in words if w != '.']
-    words = [w for w in words if w not in stopwords_list()]
-    words = [lemmatizer.lemmatize(w) for w in words]
-    pre_text = ' '.join(words)
-    return pre_text
 
 def json_to_csv(name):
     def has_vulnerable_values(df, which, criteria):
@@ -41,6 +25,15 @@ def json_to_csv(name):
     new_name = name.replace("json", "csv")
     f = os.path.join(dir, new_name)
     df.to_csv(f, index=False)
+
+def bag_of_words(X):
+    vocab = set()
+    for doc in X:
+        tokens = doc.split()
+        for t in tokens:
+            vocab.add(t)
+
+    return sorted(list(vocab))
 
 def preprocess_csv(name):
     def cast_to(df, cols, type):
@@ -63,5 +56,34 @@ def preprocess_csv(name):
         df[col] = df[col].apply(preprocess)
     df.to_csv(f, index=False)
 
-json_to_csv("hamshahri.json")
-preprocess_csv("hamshahri.csv")
+
+def word2vec():
+    #TODO complete here
+    pass
+
+def dim_reduction(type, X, from_scratch=False):
+    if type == "PCA":
+        if not from_scratch:
+            k = 500
+            pca = PCA(k)
+            x_transformed = pca.fit_transform(X)
+        else:
+            thresh = 0.95
+            cov = np.matmul(X.T, X)
+            U, S, V = np.linalg.svd(cov)
+            eig_vals = S.diagonal()
+            percent = np.array([(eig_vals[i] / sum(eig_vals)) for i in range(len(eig_vals))])
+            k = np.where(percent > thresh)[0]
+            print(k, S.shape)
+            print(U.shape)
+            # x_transformed = np.matmul(X, U[,:k])
+    elif type == "TSNE":
+        k = 500
+        tsne = TSNE(k)
+        x_transformed = tsne.fit_transform(X)
+    else:
+        raise Exception("Unknown dimension reduction type!!!")
+    return x_transformed
+
+# json_to_csv("hamshahri.json")
+# preprocess_csv("hamshahri.csv")
