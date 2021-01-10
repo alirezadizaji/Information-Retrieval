@@ -76,7 +76,9 @@ def dim_reduction(type, X, from_scratch=False):
             k = np.where(percent > thresh)[0]
             print(k, S.shape)
             print(U.shape)
-            # x_transformed = np.matmul(X, U[,:k])
+            x_transformed = np.matmul(X, U[,:k])
+            return x_transformed
+
     elif type == "TSNE":
         k = 500
         tsne = TSNE(k)
