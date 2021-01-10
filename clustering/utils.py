@@ -74,8 +74,6 @@ def dim_reduction(type, X, from_scratch=False):
             eig_vals = S.diagonal()
             percent = np.array([(eig_vals[i] / sum(eig_vals)) for i in range(len(eig_vals))])
             k = np.where(percent > thresh)[0]
-            print(k, S.shape)
-            print(U.shape)
             x_transformed = np.matmul(X, U[,:k])
             return x_transformed
 
