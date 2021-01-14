@@ -5,20 +5,23 @@ driver = webdriver.Firefox()
 driver.implicitly_wait(1)
 
 def get_ID(url):
-    return int(url.split("/")[-1])
+    return re.findall(r'\d+', url)[0]
 
 def top_citations(size=10):
     IDs = []
-    cites = driver.find_elements_by_css_selector("div.primary_paper > a.title.au-target")[:size]
+    cites = driver.find_elements_by_css_selector("div.results a.title.au-target")[:size]
     for ele in cites:
         try:
             href = ele.get_attribute("href")
-            ID = href.split("/")[-2]
-            if re.match(r'^\d+$', ID):
+            if re.search(r'\d+', href):
+                ID = re.findall(r'\d+', href)[0]
                 IDs.append(ID)
         except:
             continue
+    if not len(IDs):
+        raise Exception
     return IDs
+
 
 def extract(selector, attr=None, plural=False):
     if attr is not None:
@@ -40,18 +43,22 @@ with open("../datasets/phase3/start.txt", "r") as f:
 while len(visited) != size:
     url = urls[0]
     urls.pop(0)
-    driver.get(url)
-    ID = get_ID(url)
     try: #error in getting info
+        driver.get(url)
+        ID = get_ID(url)
         title, abstract = extract("h1.name"), extract("div.name-section > p")
         year, authors = extract("span.year"), extract("a.author", plural=True)
         cites = top_citations()
     except:
+        print("connect again...")
         urls = [url] + urls
         continue
 
-    if title not in visited:
-        visited.add(title)
+    tl = title.lower()
+    if tl in visited:
+        print("duplicate title: {}".format(tl))
+    if tl not in visited:
+        visited.add(tl)
         paper = {"id": ID,
                  "title": title,
                  "abstract": abstract,
