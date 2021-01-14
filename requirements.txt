@@ -1,4 +1,4 @@
-dill==0.3.2
+dill==0.3.3
 numpy==1.19.3
 pandas==1.1.3
 python-dateutil==2.8.1
@@ -8,3 +8,5 @@ hazm
 sklearn
 scipy
 seaborn
+ipython
+selenium

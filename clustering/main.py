@@ -32,7 +32,7 @@ def algorithm(type, num_labels):
 
     return model
 csv_name = "hamshahri.csv"
-X, y_true = get_data(csv_name, "tf_idf", features=["summary", "title"], label="main_tag")
+X, y_true = get_data(csv_name, "tf_idf", features=["summary", "title"], label="tags")
 num_labels = np.unique(y_true).shape[0]
 model = algorithm("GMM", num_labels)
 X = dim_reduction("PCA", X, from_scratch=True)
