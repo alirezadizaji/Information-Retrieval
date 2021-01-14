@@ -1,11 +1,11 @@
 import pandas as pd
 import numpy as np
 
-from models.NaiveBayes import NB
-from models.KNN import KNN
-from models.RFC import Random_Forest
-from models.SVM import *
-from models.utils import *
+from classifying.NaiveBayes import NB
+from classifying.KNN import KNN
+from classifying.RFC import Random_Forest
+from classifying.SVM import *
+from classifying.utils import *
 
 from preprocess_english import preproccess
 from Indexing import *

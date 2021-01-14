@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 
-from models.utils import tf_idf_ntn
+from classifying.utils import tf_idf_ntn
 from sklearn.decomposition import PCA
 from preproccess_persian.persian_preproccess import preprocess
 
@@ -71,14 +71,14 @@ def dim_reduction(type, X, from_scratch=False):
             thresh = 0.95
             cov = np.matmul(X.T, X)
             U, S, V = np.linalg.svd(cov)
+            print(U.shape, S.shape, V.shape)
             eig_vals = S.diagonal()
             percent = np.array([(eig_vals[i] / sum(eig_vals)) for i in range(len(eig_vals))])
             k = np.where(percent > thresh)[0]
-            x_transformed = np.matmul(X, U[,:k])
-            return x_transformed
+            # x_transformed = np.matmul(X, U[,:k])
 
     elif type == "TSNE":
-        k = 500
+        k = 2
         tsne = TSNE(k)
         x_transformed = tsne.fit_transform(X)
     else:

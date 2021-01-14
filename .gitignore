@@ -8,4 +8,6 @@
 .idea
 #/*.txt
 /*.pkl
+datasets/phase3/sample.json
+crawling/geckodriver.log
 *__pycache__*

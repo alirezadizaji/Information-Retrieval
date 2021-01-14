@@ -4,7 +4,7 @@ from sklearn import metrics
 
 from preprocess_english import preproccess
 from Indexing import eng_create_index
-from models.utils import *
+from classifying.utils import *
 
 
 def prior_prob(train_labels):
