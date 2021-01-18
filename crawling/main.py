@@ -2,7 +2,7 @@ import json
 import re
 from selenium import webdriver
 driver = webdriver.Firefox()
-driver.implicitly_wait(2)
+driver.implicitly_wait(5)
 
 
 def get_ID(url):
@@ -52,7 +52,7 @@ while len(visited) != size:
         title, abstract = extract("h1.name"), extract("div.name-section > p")
         year, authors = extract("span.year"), extract("a.author", plural=True)
         cites = top_citations()
-    except: #error in getting info
+    except: #page not loaded correctly
         print("connect again...")
         urls = [url] + urls
         continue
