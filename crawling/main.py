@@ -2,7 +2,7 @@ import json
 import re
 from selenium import webdriver
 driver = webdriver.Firefox()
-driver.implicitly_wait(1)
+driver.implicitly_wait(2)
 
 
 def get_ID(url):
