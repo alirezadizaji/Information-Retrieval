@@ -4,10 +4,15 @@ from selenium import webdriver
 driver = webdriver.Firefox()
 driver.implicitly_wait(1)
 
+
 def get_ID(url):
     return re.findall(r'\d+', url)[0]
 
+
 def top_citations(size=10):
+    """
+    NOTE: dead-end handled automatically by FIFO list('urls')
+    """
     IDs = []
     cites = driver.find_elements_by_css_selector("div.results a.title.au-target")[:size]
     for ele in cites:
@@ -18,8 +23,6 @@ def top_citations(size=10):
                 IDs.append(ID)
         except:
             continue
-    if not len(IDs):
-        raise Exception
     return IDs
 
 
@@ -43,13 +46,13 @@ with open("../datasets/phase3/start.txt", "r") as f:
 while len(visited) != size:
     url = urls[0]
     urls.pop(0)
-    try: #error in getting info
+    try:
         driver.get(url)
         ID = get_ID(url)
         title, abstract = extract("h1.name"), extract("div.name-section > p")
         year, authors = extract("span.year"), extract("a.author", plural=True)
         cites = top_citations()
-    except:
+    except: #error in getting info
         print("connect again...")
         urls = [url] + urls
         continue
@@ -57,7 +60,7 @@ while len(visited) != size:
     tl = title.lower()
     if tl in visited:
         print("duplicate title: {}".format(tl))
-    if tl not in visited:
+    else:
         visited.add(tl)
         paper = {"id": ID,
                  "title": title,
