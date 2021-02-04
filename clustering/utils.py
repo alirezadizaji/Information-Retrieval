@@ -71,6 +71,7 @@ def dim_reduction(type, X, from_scratch=False):
             thresh = 0.95
             cov = np.matmul(X.T, X)
             U, S, V = np.linalg.svd(cov)
+            print(S)
             print(U.shape, S.shape, V.shape)
             eig_vals = S.diagonal()
             percent = np.array([(eig_vals[i] / sum(eig_vals)) for i in range(len(eig_vals))])
