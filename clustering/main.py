@@ -6,7 +6,8 @@ from crawling.rank import PageRank
 
 def get_data(file_name, type, features, label):
     f = os.path.join(dir, file_name)
-    df = pd.read_csv(f, usecols=[*features, label])
+    df = pd.read_csv(f)
+    links = df['link']
     X = df[features].apply(' '.join, axis=1).to_numpy().squeeze()
     y = df[label].astype('category').cat.codes.to_numpy()
 
@@ -19,7 +20,14 @@ def get_data(file_name, type, features, label):
     else:
         raise Exception("Unknown type!!!")
 
-    return X, y
+    return X, links, y
+
+def save(labels, links, path):
+    labels = pd.Series(labels, dtype=str)
+    df = pd.concat([links, labels], axis=1)
+    df.columns = ['link', 'y_pred']
+    df.to_csv(path, index=False)
+
 
 def algorithm(type, num_labels):
     if type == "GMM":
@@ -43,26 +51,28 @@ if __name__ == '__main__':
                   "1- Crawling\n",
                   "2- PageRank\n",
                   "3- Quit"  )
-    while True:
-        cmd = input()
-
-        if cmd == '0':
-                print("Choose a Algorithme:\n",
-                      "Kmeans",
-                      ",GMM",
-                      ",Hierarchical" )
-                type = str(input())
-                csv_name = "hamshahri.csv"
-                X, y_true = get_data(csv_name, "tf_idf", features=["summary", "title"], label="tags")
-                num_labels = np.unique(y_true).shape[0]
-                model = algorithm(type, num_labels)
-                X = dim_reduction("PCA", X, from_scratch=False)
-                y_pred = model.fit_predict(X)
-
-                print(adjusted_rand_score(y_true, y_pred))
-                print(normalized_mutual_info_score(y_true, y_pred))
-
-        if cmd == '2':
-            print("Enter alpha:")
-            alpha = float(input())
-            PageRank('../articles.json',10,alpha)
+    cmd = input()
+    if cmd == '0':
+            alg = input("Choose a Algorithm(Kmeans ,GMM ,Hierarchical): ")
+            type = input("Choose preprocess type(tf_idf, word2vec): ")
+            csv_name = "hamshahri.csv"
+            X, links, y_true = get_data(csv_name, type, features=["summary", "title"], label="tags")
+            num_labels = np.unique(y_true).shape[0]
+            model = algorithm(alg, num_labels)
+            X = dim_reduction("PCA", X)
+            y_pred = model.fit_predict(X)
+            plot(X, y_pred, alg)
+            plot(X, y_true, alg, True)
+            pth = "./res/{}_{}.csv".format(alg, type).lower()
+            save(y_pred, links, pth)
+            print(adjusted_rand_score(y_true, y_pred))
+            print(normalized_mutual_info_score(y_true, y_pred))
+    if cmd == '1':
+        """
+        already crawled, just checkout crawling folder
+        """
+        pass
+    if cmd == '2':
+        print("Enter alpha:")
+        alpha = float(input())
+        PageRank('../crawling/articles.json',10,alpha)
