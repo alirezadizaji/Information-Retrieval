@@ -10,12 +10,14 @@ from preproccess_persian.persian_preproccess import preprocess
 
 dir = "../datasets/phase3"
 
+
 def json_to_csv(name):
     f = os.path.join(dir, name)
     df = pd.read_json(f)
     new_name = name.replace("json", "csv")
     f = os.path.join(dir, new_name)
     df.to_csv(f, index=False)
+
 
 def bag_of_words(X):
     vocab = set()
@@ -25,6 +27,7 @@ def bag_of_words(X):
             vocab.add(t)
 
     return sorted(list(vocab))
+
 
 def preprocess_csv(name):
     def cast_to(df, cols, type):
@@ -49,8 +52,9 @@ def preprocess_csv(name):
 
 
 def word2vec():
-    #TODO complete here
+    # TODO complete here
     pass
+
 
 def dim_reduction(type, X, k=100):
     if type == "PCA":
@@ -62,6 +66,7 @@ def dim_reduction(type, X, k=100):
     else:
         raise Exception("Unknown dimension reduction type!!!")
     return x_transformed
+
 
 def plot(X, labels, alg, truth=False, dim=2):
     if dim > 3:
