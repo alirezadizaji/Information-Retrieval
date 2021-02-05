@@ -72,7 +72,8 @@ if __name__ == '__main__':
 
         if cmd == '0':
                 print("Enter classifier type:")
-                type="RFC"
+                # type="RFC"
+                type = str(input())
                 train_df = pd.read_csv(train_path, index_col=0)
                 test_df = pd.read_csv(test_path, index_col=0)
                 vocab = bag_of_words()

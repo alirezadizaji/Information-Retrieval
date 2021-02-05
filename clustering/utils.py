@@ -11,17 +11,8 @@ from preproccess_persian.persian_preproccess import preprocess
 dir = "../datasets/phase3"
 
 def json_to_csv(name):
-    def has_vulnerable_values(df, which, criteria):
-        strs = df[[which, criteria]].values.tolist()
-        size = len(strs)
-        neq = sum([preprocess(strs[i][0]) != preprocess(strs[i][1]) for i in range(size)])
-        percent = neq / size
-        return percent > 0.3
-
     f = os.path.join(dir, name)
     df = pd.read_json(f)
-    # if not has_vulnerable_values(df, "link", "title"):
-    #     df.drop("link", axis=1, inplace=True)
     new_name = name.replace("json", "csv")
     f = os.path.join(dir, new_name)
     df.to_csv(f, index=False)
@@ -61,29 +52,35 @@ def word2vec():
     #TODO complete here
     pass
 
-def dim_reduction(type, X, from_scratch=False):
+def dim_reduction(type, X, k=100):
     if type == "PCA":
-        if not from_scratch:
-            k = 500
-            pca = PCA(k)
-            x_transformed = pca.fit_transform(X)
-        else:
-            thresh = 0.95
-            cov = np.matmul(X.T, X)
-            U, S, V = np.linalg.svd(cov)
-            print(U.shape, S.shape, V.shape)
-            eig_vals = S.diagonal()
-            percent = np.array([(eig_vals[i] / sum(eig_vals)) for i in range(len(eig_vals))])
-            k = np.where(percent > thresh)[0]
-            # x_transformed = np.matmul(X, U[,:k])
-
+        pca = PCA(k)
+        x_transformed = pca.fit_transform(X)
     elif type == "TSNE":
-        k = 2
         tsne = TSNE(k)
         x_transformed = tsne.fit_transform(X)
     else:
         raise Exception("Unknown dimension reduction type!!!")
     return x_transformed
+
+def plot(X, labels, alg, truth=False, dim=2):
+    if dim > 3:
+        raise Exception("plot dim should be 2 or 3!!!")
+    x_trans = dim_reduction("PCA", X, dim)
+    if dim == 2:
+        _, ax = plt.subplots()
+        ax.scatter(x_trans[:, 0], x_trans[:, 1], c=labels, s=50, cmap='viridis')
+    else:
+        ax = plt.axes(projection='3d')
+        ax.scatter3D(x_trans[:, 0], x_trans[:, 1], x_trans[:, 2], c=labels, s=50, cmap='viridis')
+        ax.set_zlabel("x3")
+    which = "ground truth" if truth else "predicted"
+    ax.set_title("clustering to {} {} groups".format(len(set(labels)), which))
+    ax.set_xlabel("x1")
+    ax.set_ylabel("x2")
+    pth = "./plot/{}_{}.png".format(alg, which).lower()
+    plt.savefig(pth)
+    plt.show()
 
 # json_to_csv("hamshahri.json")
 # preprocess_csv("hamshahri.csv")
