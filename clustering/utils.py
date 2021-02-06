@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
+from gensim.models import Word2Vec, Doc2Vec
 
 from classifying.utils import tf_idf_ntn
 from sklearn.decomposition import PCA
@@ -51,9 +52,21 @@ def preprocess_csv(name):
     df.to_csv(f, index=False)
 
 
-def word2vec():
-    # TODO complete here
-    pass
+def word_2_vec(x):
+    sentences = [list(x[i].split(" ")) for i in range(len(x))]
+    print(sentences)
+    N = len(x)
+    word_2_vec = np.zeros((N, 50))
+    i = 0
+    for s in sentences:
+        print(s)
+        model = Word2Vec(s, min_count=1, size=50, workers=3, window=3, sg=1)
+        sent_vec = model[model.wv.vocab]
+        print(sent_vec)
+        doc_vec = np.amin(sent_vec, axis=0)
+        word_2_vec[i] = doc_vec
+        i += 1
+    return word_2_vec
 
 
 def dim_reduction(type, X, k=100):

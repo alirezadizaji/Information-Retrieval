@@ -16,8 +16,7 @@ def get_data(file_name, type, features, label):
     if type == "tf_idf":
         x = tf_idf_ntn(x, vocabs)
     elif type == "word2vec":
-        # TODO complete word2vec func in clustering.utils
-        pass
+        x = word_2_vec(x)
     else:
         raise Exception("Unknown type!!!")
 
