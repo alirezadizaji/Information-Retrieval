@@ -16,8 +16,7 @@ def get_data(file_name, type, features, label):
     if type == "tf_idf":
         x = tf_idf_ntn(x, vocabs)
     elif type == "word2vec":
-        # TODO complete word2vec func in clustering.utils
-        pass
+        x = word_2_vec(x)
     else:
         raise Exception("Unknown type!!!")
 
@@ -62,8 +61,8 @@ if __name__ == '__main__':
         model = algorithm(alg, num_labels)
         X = dim_reduction("PCA", X)
         y_pred = model.fit_predict(X)
-        plot(X, y_pred, alg)
-        plot(X, y_true, alg, True)
+        plot(X, y_pred, alg, type)
+        plot(X, y_true, alg, type, True)
         pth = "./res/{}_{}.csv".format(alg, type).lower()
         save(y_pred, links, pth)
         print(adjusted_rand_score(y_true, y_pred))
