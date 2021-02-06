@@ -54,15 +54,12 @@ def preprocess_csv(name):
 
 def word_2_vec(x):
     sentences = [list(x[i].split(" ")) for i in range(len(x))]
-    print(sentences)
     N = len(x)
     word_2_vec = np.zeros((N, 50))
     i = 0
     for s in sentences:
-        print(s)
         model = Word2Vec(s, min_count=1, size=50, workers=3, window=3, sg=1)
         sent_vec = model[model.wv.vocab]
-        print(sent_vec)
         doc_vec = np.amin(sent_vec, axis=0)
         word_2_vec[i] = doc_vec
         i += 1
@@ -70,6 +67,8 @@ def word_2_vec(x):
 
 
 def dim_reduction(type, X, k=100):
+    if X.shape[1] <= k:
+        return X
     if type == "PCA":
         pca = PCA(k)
         x_transformed = pca.fit_transform(X)
@@ -81,7 +80,7 @@ def dim_reduction(type, X, k=100):
     return x_transformed
 
 
-def plot(X, labels, alg, truth=False, dim=2):
+def plot(X, labels, alg, type, truth=False, dim=2):
     if dim > 3:
         raise Exception("plot dim should be 2 or 3!!!")
     x_trans = dim_reduction("PCA", X, dim)
@@ -92,11 +91,11 @@ def plot(X, labels, alg, truth=False, dim=2):
         ax = plt.axes(projection='3d')
         ax.scatter3D(x_trans[:, 0], x_trans[:, 1], x_trans[:, 2], c=labels, s=50, cmap='viridis')
         ax.set_zlabel("x3")
-    which = "ground truth" if truth else "predicted"
+    which = "truth" if truth else "pred"
     ax.set_title("clustering to {} {} groups".format(len(set(labels)), which))
     ax.set_xlabel("x1")
     ax.set_ylabel("x2")
-    pth = "./plot/{}_{}.png".format(alg, which).lower()
+    pth = "./plot/{}_{}_{}.png".format(alg, type, which).lower()
     plt.savefig(pth)
     plt.show()
 
