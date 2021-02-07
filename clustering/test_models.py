@@ -22,34 +22,28 @@ gmm_params = [
             {
                 'n_components': 20,
                 'max_iter': 50,
-                'random_state':None,
              },
             {
-                'n_components': 40,
+                'n_components': 49,
                 'max_iter': 50,
-                'random_state':None,
              },
             {
                 'n_components': 60,
                 'max_iter': 50,
-                'random_state':None,
              },
 
     {
-                'n_components': 50,
+                'n_components': 49,
                 'max_iter': 100,
-                'random_state':None,
              },
             {
-                'n_components': 50,
+                'n_components': 49,
                 'max_iter': 150,
-                'random_state':None,
              },
 
     {
-                'n_components': 50,
+                'n_components': 49,
                 'max_iter': 200,
-                'random_state':None,
              },
 ]
 km_params = [
@@ -57,34 +51,28 @@ km_params = [
             {
                 'n_clusters':20,
                 'max_iter': 50,
-                'random_state':None,
              },
             {
-                'n_clusters': 40,
+                'n_clusters': 49,
                 'max_iter': 50,
-                'random_state':None,
              },
             {
                 'n_clusters': 60,
                 'max_iter': 50,
-                'random_state':None,
              },
 
     {
-                'n_clusters': 50,
+                'n_clusters': 49,
                 'max_iter': 100,
-                'random_state':None,
              },
             {
-                'n_clusters': 50,
+                'n_clusters': 49,
                 'max_iter': 150,
-                'random_state':None,
              },
 
     {
-                'n_clusters': 50,
+                'n_clusters': 49,
                 'max_iter': 200,
-                'random_state':None,
              },
 ]
 hierarical_params = [
@@ -94,7 +82,7 @@ hierarical_params = [
                 'linkage': 'average',
              },
             {
-                'n_clusters': 40,
+                'n_clusters': 49,
                 'linkage': 'average',
              },
             {
@@ -103,50 +91,48 @@ hierarical_params = [
              },
 
     {
-                'n_clusters': 80,
+                'n_clusters': 20,
                 'linkage': 'single',
              },
             {
-                'n_clusters': 100,
+                'n_clusters': 49,
                 'linkage': 'single',
              },
 
     {
-                'n_clusters': 120,
+                'n_clusters': 60,
                 'linkage': 'single',
              },
-     {
-                'n_clusters': 10,
-                'linkage': 'single',
-             },
+
 ]
 
 def test(alg,type):
     csv_name = "hamshahri.csv"
     y_pred =[]
     X, links, y_true = get_data(csv_name, type, features=["summary", "title"], label="tags")
-    X = dim_reduction("PCA", X)
-    x_trans = dim_reduction("PCA", X, 2)
+
+    if type == 'tf_idf':
+      X = dim_reduction("PCA", X)
 
     if alg =='GMM':
         for param in gmm_params:
                 gmm = GaussianMixture(**param)
                 y_pred.append(gmm.fit_predict(X))
-        plot_res(alg, type,x_trans,y_pred,gmm_params)
+        plot_res(alg, type,X,y_pred,gmm_params)
 
 
     if alg =='Kmeans':
         for param in km_params:
                 kmean = KMeans(**param)
                 y_pred.append(kmean.fit_predict(X))
-        plot_res(alg, type  ,x_trans,y_pred,km_params)
+        plot_res(alg, type  ,X,y_pred,km_params)
 
     if alg =='Hierarchical':
         for param in hierarical_params:
                 hirchal = AgglomerativeClustering(**param)
                 y_pred.append(hirchal.fit_predict(X))
-        plot_res(alg,type ,x_trans,y_pred,hierarical_params)
+        plot_res(alg,type ,X,y_pred,hierarical_params)
 
-    for x in y_pred:
-        print("ARI = ",adjusted_rand_score(y_true, x) , "normalize = ",normalized_mutual_info_score(y_true, x))
+    for y in y_pred:
+        print("ARI = ",adjusted_rand_score(y_true, y) , "normalize = ",normalized_mutual_info_score(y_true, y))
 
