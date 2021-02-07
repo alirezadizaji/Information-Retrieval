@@ -1,9 +1,10 @@
+
+from clustering.test_models import *
 from sklearn.mixture import GaussianMixture
 from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score
 from clustering.utils import *
 from sklearn.cluster import AgglomerativeClustering, KMeans
 from crawling.rank import PageRank
-
 
 def get_data(file_name, type, features, label):
     f = os.path.join(dir, file_name)
@@ -50,7 +51,8 @@ if __name__ == '__main__':
           "0- Clustring\n",
           "1- Crawling\n",
           "2- PageRank\n",
-          "3- Quit")
+          "3- test\n",
+          "4- Quit")
     cmd = input()
     if cmd == '0':
         alg = input("Choose a Algorithm(Kmeans ,GMM ,Hierarchical): ")
@@ -76,3 +78,8 @@ if __name__ == '__main__':
         print("Enter alpha:")
         alpha = float(input())
         PageRank('../crawling/articles.json', 10, alpha)
+
+    if cmd =='3':
+        alg = input("Choose a Algorithm(Kmeans ,GMM ,Hierarchical): ")
+        type = input("Choose preprocess type(tf_idf, word2vec): ")
+        test(alg,type)
