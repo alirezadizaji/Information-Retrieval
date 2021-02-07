@@ -17,7 +17,7 @@ def get_data(file_name, type, features, label):
     if type == "tf_idf":
         x = tf_idf_ntn(x, vocabs)
     elif type == "word2vec":
-        x = word_2_vec(x)
+        x = word_2_vec(df[features].apply(' '.join, axis=1))
     else:
         raise Exception("Unknown type!!!")
 

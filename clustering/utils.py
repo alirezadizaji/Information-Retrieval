@@ -54,14 +54,16 @@ def preprocess_csv(name):
 
 def word_2_vec(x):
     sentences = [list(x[i].split(" ")) for i in range(len(x))]
+    model = Word2Vec(sentences, min_count=2, size=50, iter=200)
     N = len(x)
     word_2_vec = np.zeros((N, 50))
     i = 0
     for s in sentences:
-        model = Word2Vec(s, min_count=1, size=50, workers=3, window=3, sg=1)
-        sent_vec = model[model.wv.vocab]
-        doc_vec = np.amin(sent_vec, axis=0)
-        word_2_vec[i] = doc_vec
+        tot = 0
+        for w in s:
+            if w in model.wv:
+                tot += model.wv[w]
+        word_2_vec[i] = (tot / len(s))
         i += 1
     return word_2_vec
 
