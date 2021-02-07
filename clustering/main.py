@@ -31,11 +31,11 @@ def save(labels, links, path):
     df.to_csv(path, index=False)
 
 
-def algorithm(type, num_labels):
+def algorithm(type, num_labels, iter=50):
     if type == "GMM":
-        model = GaussianMixture(num_labels)
+        model = GaussianMixture(num_labels, max_iter=iter)
     elif type == "KMeans":
-        model = KMeans(n_clusters=num_labels, random_state=0)
+        model = KMeans(n_clusters=num_labels, max_iter=iter, random_state=0)
     elif type == "Hierarchical":
         model = AgglomerativeClustering(n_clusters=num_labels, affinity='euclidean', linkage='ward')
         pass
